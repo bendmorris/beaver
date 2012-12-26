@@ -4,7 +4,9 @@ from parser import parse_string, parse_file, parse_stream
 
 class Graph:
     '''A collection of triples.'''
-    def __init__(self):
+    def __init__(self, verbose=False):
+        self.verbose = verbose
+    
         self.statements = {}
         self.prefix_to_uri = {}
         self.last_subj = None
@@ -27,6 +29,8 @@ class Graph:
             self.statements[subj] = {}
         self.statements[subj][verb] = stmt.obj
         
+        if self.verbose: print str(stmt)
+        
     def execute(self, stmt, context={}):
         if isinstance(stmt, Statement):
             for part in ['subj', 'verb', 'obj']:
@@ -37,6 +41,7 @@ class Graph:
                     else: raise BeaverException('Undefined variable: %s' % id)
             self.add_stmt(stmt)
         elif isinstance(stmt, Command):
+            if self.verbose: print stmt
             stmt.execute(self)
         elif hasattr(stmt, '__iter__'):
             for substmt in stmt:
@@ -67,7 +72,9 @@ class Graph:
             self.execute(stmt)
         
     def draw(self, filename):
-        import pygraphviz as pgv
+        try: import pygraphviz as pgv
+        except ImportError: raise BeaverException('pygraphviz is required to draw graphs.')
+        
         g = pgv.AGraph(overlap=False, strict=False)
         for s in self.statements:
             g.add_node(str(s))

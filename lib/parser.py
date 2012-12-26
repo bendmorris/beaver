@@ -39,11 +39,13 @@ triples << (
             
 # commands
 prefix_cmd = (Suppress('@prefix') + ident + Suppress(":") + uri).setParseAction(lambda x: PrefixCommand(*x))
+load_cmd = (Suppress('@load') + uri).setParseAction(lambda x: LoadCommand(*x))
 import_cmd = (Suppress('@import') + uri).setParseAction(lambda x: ImportCommand(*x))
 definition_cmd = (variable + Optional(pattern, default=Pattern([])) + Suppress('=') + triples).setParseAction(lambda x: DefCommand(*x))
 call_cmd = (variable + Optional(pattern, default=Pattern([]))).setParseAction(lambda x: CallCommand(*x))
 command = (
            prefix_cmd | 
+           load_cmd | 
            import_cmd | 
            definition_cmd |
            call_cmd
