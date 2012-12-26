@@ -10,10 +10,10 @@ Other commands include:
     
     # define and call functions
     ?create_edge ?child ?parent ?edge = {
-        ?child part_of_edge ?edge .
-        ?parent part_of_edge ?edge .
-        ?edge has_parent ?parent ;
-              has_child ?child .
+        ?child <part_of_edge> ?edge .
+        ?parent <part_of_edge> ?edge .
+        ?edge <has_parent> ?parent ;
+              <has_child> ?child .
     }
-
+    
     ?create_edge <node1> <node2> <edge1> .

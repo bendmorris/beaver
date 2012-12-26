@@ -34,7 +34,7 @@ triples = Forward()
 triples << (
             (triple + Suppress('.')) | 
             (triple + OneOrMore(continued_triple) + Suppress('.')) | 
-            (Suppress('{') + triples + Suppress('}'))
+            (Suppress('{') + OneOrMore(triples) + Suppress('}'))
             )
             
 # commands
@@ -48,8 +48,8 @@ command = (
            definition_cmd |
            call_cmd
            ) + Optional(".").suppress()
-            
-expression = comment | command | triples
+           
+expression = (comment | triples | command)
 
 
 def parse_string(string):

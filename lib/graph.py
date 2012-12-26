@@ -14,8 +14,6 @@ class Graph:
         self.defs = {}
 
     def add_stmt(self, stmt):
-        print stmt
-    
         if stmt.subj == ';': 
             subj = self.last_subj
         else: 
