@@ -12,6 +12,7 @@ class PrefixCommand(Command):
     def __init__(self, prefix, uri):
         self.prefix = prefix
         self.uri = uri
+    def __str__(self): return '@prefix %s: %s' % (self.prefix, self.uri)
     def execute(self, graph):
         graph.prefix_to_uri[self.prefix] = self.uri
         

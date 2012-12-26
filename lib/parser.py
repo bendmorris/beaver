@@ -55,8 +55,8 @@ expression = (comment | triples | command)
 
 
 def parse_string(string):
-    with StringIO(treetext) as handle:
-        return parse_stream(handle)
+    handle = StringIO(string)
+    return parse_stream(handle)
 
 def parse_file(filename):
     with open(filename, 'r') as handle:

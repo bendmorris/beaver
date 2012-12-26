@@ -16,10 +16,18 @@ for input_file in args.file:
     
     
 if not args.file or args.interactive:
-    # TODO: interactive mode
-    print "No file specified."
-    sys.exit()
-    
+    exit = False
+    while not exit:
+        try:
+            next_line = raw_input('>> ').strip()
+            if next_line:
+                graph.parse(text=next_line)
+        except EOFError:
+            print
+            exit = True
+        except KeyboardInterrupt:
+            print
+            continue        
     
 if args.draw:
     graph.draw(args.draw)

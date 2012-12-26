@@ -29,7 +29,7 @@ class Graph:
             self.statements[subj] = {}
         self.statements[subj][verb] = stmt.obj
         
-        if self.verbose: print str(stmt)
+        if self.verbose: print '%s .' % stmt
         
     def execute(self, stmt, context={}):
         if isinstance(stmt, Statement):
@@ -41,7 +41,7 @@ class Graph:
                     else: raise BeaverException('Undefined variable: %s' % id)
             self.add_stmt(stmt)
         elif isinstance(stmt, Command):
-            if self.verbose: print stmt
+            if self.verbose: print str(stmt)
             stmt.execute(self)
         elif hasattr(stmt, '__iter__'):
             for substmt in stmt:
