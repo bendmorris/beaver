@@ -1,17 +1,25 @@
 import argparse
 import sys
-import lib.parser as parser
-import lib.types as types
+from lib.graph import Graph
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument('file', nargs='*')
+arg_parser.add_argument('file', nargs='*', help='file to be interpreted')
+arg_parser.add_argument('-d', '--draw', help='output an image of the resulting graph to the given image file')
+arg_parser.add_argument('-i', '--interactive', help='enter interactive mode after interpreting file', action='store_true')
+arg_parser.add_argument('-v', '--verbose', help='print each triple statement as evaluated', action='store_true')
 args = arg_parser.parse_args()
 
-if not args.file:
+
+graph = Graph(verbose=args.verbose)
+for input_file in args.file:
+    graph.parse(filename=input_file)
+    
+    
+if not args.file or args.interactive:
+    # TODO: interactive mode
     print "No file specified."
     sys.exit()
-
-context = types.Graph()
-for input_file in args.file:
-    with open(input_file, 'r') as file_handle:
-        parser.parse(file_handle)
+    
+    
+if args.draw:
+    graph.draw(args.draw)
