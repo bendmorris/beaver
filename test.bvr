@@ -1,0 +1,28 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix cdao: <http://purl.obolibrary.org/obo/cdao.owl#> .
+
+<edge1>
+    cdao:has_Child_Node <node2> ;
+    cdao:has_Parent_Node <node1> ;
+    cdao:has_annotation <edge_annotation1> ;
+    a cdao:Directed_Edge .
+
+<edge10>
+    cdao:has_Child_Node <node12> ;
+    cdao:has_Parent_Node <node11> ;
+    cdao:has_annotation <edge_annotation10> ;
+    a cdao:Directed_Edge .
+
+?a ?x1 ?x2 =  
+    1 ?x1 ?x2 ;
+      3 <http://www.bob.com> .
+
+
+?b ?a ?b ?c = { ?a ?b ?c . }
+
+# abcdefg
+
+# @import <file:///home/ben/Dropbox/Dev/beaver/test.rdf> .
+
+?b 1 3 2 .

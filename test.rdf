@@ -1,0 +1,319 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix cdao: <http://purl.obolibrary.org/obo/cdao.owl#> .
+
+<edge1>
+    cdao:has_Child_Node <node2> ;
+    cdao:has_Parent_Node <node1> ;
+    cdao:has_annotation <edge_annotation1> ;
+    a cdao:Directed_Edge .
+
+<edge10>
+    cdao:has_Child_Node <node12> ;
+    cdao:has_Parent_Node <node11> ;
+    cdao:has_annotation <edge_annotation10> ;
+    a cdao:Directed_Edge .
+
+<edge11>
+    cdao:has_Child_Node <node13> ;
+    cdao:has_Parent_Node <node12> ;
+    cdao:has_annotation <edge_annotation11> ;
+    a cdao:Directed_Edge .
+
+<edge12>
+    cdao:has_Child_Node <node14> ;
+    cdao:has_Parent_Node <node12> ;
+    cdao:has_annotation <edge_annotation12> ;
+    a cdao:Directed_Edge .
+
+<edge13>
+    cdao:has_Child_Node <node15> ;
+    cdao:has_Parent_Node <node11> ;
+    cdao:has_annotation <edge_annotation13> ;
+    a cdao:Directed_Edge .
+
+<edge14>
+    cdao:has_Child_Node <node16> ;
+    cdao:has_Parent_Node <node15> ;
+    cdao:has_annotation <edge_annotation14> ;
+    a cdao:Directed_Edge .
+
+<edge15>
+    cdao:has_Child_Node <node17> ;
+    cdao:has_Parent_Node <node15> ;
+    cdao:has_annotation <edge_annotation15> ;
+    a cdao:Directed_Edge .
+
+<edge16>
+    cdao:has_Child_Node <node18> ;
+    cdao:has_Parent_Node <node10> ;
+    cdao:has_annotation <edge_annotation16> ;
+    a cdao:Directed_Edge .
+
+<edge2>
+    cdao:has_Child_Node <node3> ;
+    cdao:has_Parent_Node <node1> ;
+    cdao:has_annotation <edge_annotation2> ;
+    a cdao:Directed_Edge .
+
+<edge3>
+    cdao:has_Child_Node <node4> ;
+    cdao:has_Parent_Node <node3> ;
+    cdao:has_annotation <edge_annotation3> ;
+    a cdao:Directed_Edge .
+
+<edge4>
+    cdao:has_Child_Node <node5> ;
+    cdao:has_Parent_Node <node4> ;
+    cdao:has_annotation <edge_annotation4> ;
+    a cdao:Directed_Edge .
+
+<edge5>
+    cdao:has_Child_Node <node6> ;
+    cdao:has_Parent_Node <node4> ;
+    cdao:has_annotation <edge_annotation5> ;
+    a cdao:Directed_Edge .
+
+<edge6>
+    cdao:has_Child_Node <node7> ;
+    cdao:has_Parent_Node <node3> ;
+    cdao:has_annotation <edge_annotation6> ;
+    a cdao:Directed_Edge .
+
+<edge7>
+    cdao:has_Child_Node <node8> ;
+    cdao:has_Parent_Node <node7> ;
+    cdao:has_annotation <edge_annotation7> ;
+    a cdao:Directed_Edge .
+
+<edge8>
+    cdao:has_Child_Node <node9> ;
+    cdao:has_Parent_Node <node7> ;
+    cdao:has_annotation <edge_annotation8> ;
+    a cdao:Directed_Edge .
+
+<edge9>
+    cdao:has_Child_Node <node11> ;
+    cdao:has_Parent_Node <node10> ;
+    cdao:has_annotation <edge_annotation9> ;
+    a cdao:Directed_Edge .
+
+<edge_annotation1>
+    cdao:has_value "0.4353" ;
+    a cdao:EdgeLength .
+
+<edge_annotation10>
+    cdao:has_value "1" ;
+    a cdao:EdgeLength .
+
+<edge_annotation11>
+    cdao:has_value "1" ;
+    a cdao:EdgeLength .
+
+<edge_annotation12>
+    cdao:has_value "1" ;
+    a cdao:EdgeLength .
+
+<edge_annotation13>
+    cdao:has_value "3" ;
+    a cdao:EdgeLength .
+
+<edge_annotation14>
+    cdao:has_value "1" ;
+    a cdao:EdgeLength .
+
+<edge_annotation15>
+    cdao:has_value "2" ;
+    a cdao:EdgeLength .
+
+<edge_annotation16>
+    cdao:has_value "2" ;
+    a cdao:EdgeLength .
+
+<edge_annotation2>
+    cdao:has_value "0.34534" ;
+    a cdao:EdgeLength .
+
+<edge_annotation3>
+    cdao:has_value "0.324" ;
+    a cdao:EdgeLength .
+
+<edge_annotation4>
+    cdao:has_value "0.234" ;
+    a cdao:EdgeLength .
+
+<edge_annotation5>
+    cdao:has_value "0.3243" ;
+    a cdao:EdgeLength .
+
+<edge_annotation6>
+    cdao:has_value "0.3247" ;
+    a cdao:EdgeLength .
+
+<edge_annotation7>
+    cdao:has_value "0.32443" ;
+    a cdao:EdgeLength .
+
+<edge_annotation8>
+    cdao:has_value "0.2342" ;
+    a cdao:EdgeLength .
+
+<edge_annotation9>
+    cdao:has_value "1" ;
+    a cdao:EdgeLength .
+
+<http://purl.obolibrary.org/obo/cdao.owl#>
+    a owl:Ontology .
+
+<node1>
+    cdao:belongs_to_Edge_as_Parent <edge1>, <edge2> ;
+    a cdao:AncestralNode .
+
+<node10>
+    cdao:belongs_to_Edge_as_Parent <edge16>, <edge9> ;
+    a cdao:AncestralNode .
+
+<node11>
+    cdao:belongs_to_Edge_as_Child <edge9> ;
+    cdao:belongs_to_Edge_as_Parent <edge10>, <edge13> ;
+    cdao:has_Parent <node10> ;
+    a cdao:AncestralNode .
+
+<node12>
+    cdao:belongs_to_Edge_as_Child <edge10> ;
+    cdao:belongs_to_Edge_as_Parent <edge11>, <edge12> ;
+    cdao:has_Parent <node11> ;
+    a cdao:AncestralNode .
+
+<node13>
+    cdao:belongs_to_Edge_as_Child <edge11> ;
+    cdao:has_Parent <node12> ;
+    cdao:represents_TU <tu6> ;
+    a cdao:TerminalNode .
+
+<node14>
+    cdao:belongs_to_Edge_as_Child <edge12> ;
+    cdao:has_Parent <node12> ;
+    cdao:represents_TU <tu7> ;
+    a cdao:TerminalNode .
+
+<node15>
+    cdao:belongs_to_Edge_as_Child <edge13> ;
+    cdao:belongs_to_Edge_as_Parent <edge14>, <edge15> ;
+    cdao:has_Parent <node11> ;
+    a cdao:AncestralNode .
+
+<node16>
+    cdao:belongs_to_Edge_as_Child <edge14> ;
+    cdao:has_Parent <node15> ;
+    cdao:represents_TU <tu8> ;
+    a cdao:TerminalNode .
+
+<node17>
+    cdao:belongs_to_Edge_as_Child <edge15> ;
+    cdao:has_Parent <node15> ;
+    cdao:represents_TU <tu9> ;
+    a cdao:TerminalNode .
+
+<node18>
+    cdao:belongs_to_Edge_as_Child <edge16> ;
+    cdao:has_Parent <node10> ;
+    cdao:represents_TU <tu10> ;
+    a cdao:TerminalNode .
+
+<node2>
+    cdao:belongs_to_Edge_as_Child <edge1> ;
+    cdao:has_Parent <node1> ;
+    cdao:represents_TU <tu1> ;
+    a cdao:TerminalNode .
+
+<node3>
+    cdao:belongs_to_Edge_as_Child <edge2> ;
+    cdao:belongs_to_Edge_as_Parent <edge3>, <edge6> ;
+    cdao:has_Parent <node1> ;
+    a cdao:AncestralNode .
+
+<node4>
+    cdao:belongs_to_Edge_as_Child <edge3> ;
+    cdao:belongs_to_Edge_as_Parent <edge4>, <edge5> ;
+    cdao:has_Parent <node3> ;
+    a cdao:AncestralNode .
+
+<node5>
+    cdao:belongs_to_Edge_as_Child <edge4> ;
+    cdao:has_Parent <node4> ;
+    cdao:represents_TU <tu2> ;
+    a cdao:TerminalNode .
+
+<node6>
+    cdao:belongs_to_Edge_as_Child <edge5> ;
+    cdao:has_Parent <node4> ;
+    cdao:represents_TU <tu3> ;
+    a cdao:TerminalNode .
+
+<node7>
+    cdao:belongs_to_Edge_as_Child <edge6> ;
+    cdao:belongs_to_Edge_as_Parent <edge7>, <edge8> ;
+    cdao:has_Parent <node3> ;
+    a cdao:AncestralNode .
+
+<node8>
+    cdao:belongs_to_Edge_as_Child <edge7> ;
+    cdao:has_Parent <node7> ;
+    cdao:represents_TU <tu4> ;
+    a cdao:TerminalNode .
+
+<node9>
+    cdao:belongs_to_Edge_as_Child <edge8> ;
+    cdao:has_Parent <node7> ;
+    cdao:represents_TU <tu5> ;
+    a cdao:TerminalNode .
+
+<tree1>
+    cdao:has_root <node1> ;
+    a cdao:RootedTree .
+
+<tree2>
+    cdao:has_root <node10> ;
+    a cdao:RootedTree .
+
+<tu1>
+    rdf:label "t1" ;
+    a cdao:TU .
+
+<tu10>
+    rdf:label "t1" ;
+    a cdao:TU .
+
+<tu2>
+    rdf:label "t3" ;
+    a cdao:TU .
+
+<tu3>
+    rdf:label "t2" ;
+    a cdao:TU .
+
+<tu4>
+    rdf:label "t5" ;
+    a cdao:TU .
+
+<tu5>
+    rdf:label "t4" ;
+    a cdao:TU .
+
+<tu6>
+    rdf:label "t4" ;
+    a cdao:TU .
+
+<tu7>
+    rdf:label "t5" ;
+    a cdao:TU .
+
+<tu8>
+    rdf:label "t2" ;
+    a cdao:TU .
+
+<tu9>
+    rdf:label "t3" ;
+    a cdao:TU .
+
