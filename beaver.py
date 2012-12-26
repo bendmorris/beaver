@@ -10,28 +10,43 @@ arg_parser.add_argument('-v', '--verbose', help='print each triple statement as 
 args = arg_parser.parse_args()
 
 
-def main():
-    graph = Graph(verbose=args.verbose)
-    for input_file in args.file:
-        graph.parse(filename=input_file)
-    
-    
-    if not args.file or args.interactive:
-        exit = False
-        while not exit:
-            try:
-                next_line = raw_input('>> ').strip()
-                if next_line:
-                    graph.parse(text=next_line)
-            except EOFError:
-                print
-                exit = True
-            except KeyboardInterrupt:
-                print
-                continue        
-    
-    if args.draw:
-        graph.draw(args.draw)
+graph = Graph(verbose=args.verbose)
+for input_file in args.file:
+    graph.parse(filename=input_file)
 
-if __name__ == '__main__':
-    main()
+    
+if not args.file or args.interactive:
+    exit = False
+    while not exit:
+        try:
+            next_line = raw_input('>> ').strip()
+            
+            if not next_line: continue
+            
+            if next_line[0] == '-' and next_line.split(' ')[0] in arg_parser._option_string_actions:
+                command = next_line.split(' ')[0]
+                action = arg_parser._option_string_actions[command].dest
+                
+                if len(next_line.split(' ')) > 1:
+                    arg = ' '.join(next_line.split(' ')[1:])
+                    try: arg = eval(arg)
+                    except: pass
+                else: 
+                    arg = not getattr(args, action)
+                
+                try: 
+                    setattr(args, action, arg)
+                except:
+                    print 'Illegal argument: %s %s' % (command, arg)
+                
+            else:
+                graph.parse(text=next_line)
+        except EOFError:
+            print
+            exit = True
+        except KeyboardInterrupt:
+            print
+            continue        
+    
+if args.draw:
+    graph.draw(args.draw)

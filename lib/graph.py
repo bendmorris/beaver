@@ -27,7 +27,8 @@ class Graph:
         
         if not subj in self.statements:
             self.statements[subj] = {}
-        self.statements[subj][verb] = stmt.obj
+        if not verb in self.statements[subj]: self.statements[subj][verb] = []
+        self.statements[subj][verb].append(stmt.obj)
         
         if self.verbose: print '%s .' % stmt
         
@@ -78,8 +79,9 @@ class Graph:
         g = pgv.AGraph(overlap=False, strict=False, label_scheme=2)
         for s in self.statements:
             g.add_node(str(s))
-            for v, o in self.statements[s].items():
-                g.add_node(str(o))
-                g.add_edge(str(s), str(o), label=str(v), dir='forward')
+            for v, objs in self.statements[s].items():
+                for o in objs:
+                    g.add_node(str(o))
+                    g.add_edge(str(s), str(o), label=str(v), dir='forward')
         g.layout(prog='dot')
         g.draw(filename)

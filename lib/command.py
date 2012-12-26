@@ -95,3 +95,9 @@ class LoadCommand(Command):
                 contents.append(new_item)
             stmt = Statement(*contents)
             graph.add_stmt(stmt)
+            
+            
+class DelCommand(Command):
+    '''Remove triples from the graph.'''
+    def __init__(self, triples):
+        self.triples = triples
