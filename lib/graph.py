@@ -75,11 +75,11 @@ class Graph:
         try: import pygraphviz as pgv
         except ImportError: raise BeaverException('pygraphviz is required to draw graphs.')
         
-        g = pgv.AGraph(overlap=False, strict=False)
+        g = pgv.AGraph(overlap=False, strict=False, label_scheme=2)
         for s in self.statements:
             g.add_node(str(s))
             for v, o in self.statements[s].items():
                 g.add_node(str(o))
                 g.add_edge(str(s), str(o), label=str(v), dir='forward')
-        g.layout()
+        g.layout(prog='dot')
         g.draw(filename)

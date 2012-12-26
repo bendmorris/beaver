@@ -22,6 +22,7 @@ class DefCommand(Command):
         self.ident = ident
         self.pattern = pattern
         self.triples = triples
+    def __str__(self): return '%s %s = %s' % (self.ident, self.pattern, self.triples)
     def execute(self, graph):
         ident = str(self.ident)
         if not ident in graph.defs: graph.defs[ident] = []
@@ -32,6 +33,7 @@ class CallCommand(Command):
     def __init__(self, ident, pattern):
         self.ident = ident
         self.pattern = pattern
+    def __str__(self): return '%s %s' % (self.ident, self.pattern)
     def execute(self, graph):
         try: patterns = graph.defs[str(self.ident)]
         except KeyError: raise BeaverException('Undefined variable: %s' % self.ident)
@@ -60,19 +62,31 @@ class ImportCommand(Command):
     '''Import and interpret a Beaver file.'''
     def __init__(self, uri):
         self.uri = uri
+    def __str__(self): return '@import %s' % self.uri
     def execute(self, graph):
-        stream = urllib2.urlopen(str(self.uri)[1:-1])
-        graph.parse(stream=stream)
+        try:
+            stream = urllib2.urlopen(str(self.uri)[1:-1])
+            graph.parse(stream=stream)
+        except ValueError:
+            with open(str(self.uri)[1:-1], 'r') as stream:
+                graph.parse(stream=stream)
+        
         
 class LoadCommand(Command):
     '''Load an RDF file.'''
     def __init__(self, uri):
         self.uri = uri
+    def __str__(self): return '@load %s' % self.uri
     def execute(self, graph):
         import RDF
         
         parser = RDF.Parser('rdfxml')
-        data = urllib2.urlopen(str(self.uri)[1:-1]).read()
+        try:
+            data = urllib2.urlopen(str(self.uri)[1:-1]).read()
+        except ValueError:
+            with open(str(self.uri)[1:-1], 'r') as handle:
+                data = handle.read()
+                
         for rdf_statement in parser.parse_string_as_stream(data, str(self.uri)[1:-1]):
             contents = []
             for item in rdf_statement.subject, rdf_statement.predicate, rdf_statement.object:
