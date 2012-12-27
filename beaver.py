@@ -16,6 +16,11 @@ arg_parser.add_argument('-e', '--eval', help='string to be evaluated')
 arg_parser.add_argument('-v', '--verbose', help='print each triple statement as evaluated', action='store_true')
 args = arg_parser.parse_args()
 
+if not sys.stdin.isatty():
+    # read and evaluate piped input
+    if args.eval is None: args.eval = ''
+    args.eval = sys.stdin.read() + args.eval
+
 
 def main():
     graph = Graph(verbose=args.verbose)
