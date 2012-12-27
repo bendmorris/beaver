@@ -79,10 +79,13 @@ class Graph:
         graph = pydot.Dot(graph_type='digraph')
         
         def format_label(s):
-            bad_chars = "<>:"
             s = str(s)
+            if s.startswith('<') and s.endswith('>'): s = s[1:-1]
+            
+            bad_chars = "<>:"
             for char in bad_chars:
                 s = s.replace(char, '\\%s' % char)
+                
             return s
         
         for s in self.statements:
