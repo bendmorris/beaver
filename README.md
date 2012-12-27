@@ -3,7 +3,8 @@ Beaver is a semantic programming language. It accepts and manipulates data in th
 To install, navigate to the source directory and run "python setup.py install".
 
 Currently, Beaver is an interpreted superset of the Turtle RDF serialization format. Therefore, any valid 
-Turtle file is also valid Beaver code. RDF/XML can also be loaded using the @load command.
+Turtle file is also valid Beaver code. RDF/XML can also be loaded using the @load command (requires librdf,
+the Redland RDF library's Python bindings: http://librdf.org/docs/python.html).
 
 
 Examples of Beaver commands:
@@ -36,7 +37,7 @@ Examples of Beaver commands:
     @del <node1> <part_of_edge> <edge1> .
 
 
-Using the interpreter, you can save images of the resulting graphs. For example:
+Using the interpreter, you can save images of the resulting graphs (requires pydot or pygraphviz.) For example:
 
     beaver -d test.png -e "<ben> a <human> ; <likes> <carol>, <football> . <carol> a <human> ; <likes> <ben>, <anime> . <ruben> a <human>, <baby> ."
 
