@@ -29,6 +29,8 @@ def parser_test():
     LoadCommand'>(**{'uri': Uri('test.xml')})
     >>> expression.parseString('?a = 1 2 3 .', parseAll=True)[0]
     DefCommand'>(**{'pattern': Pattern(([],)), 'ident': Variable(('a',)), 'triples': (Statement(1, 2, 3, ()),)})
+    >>> expression.parseString('@prefix ex: <http://www.example.com/example#>', parseAll=True)[0]
+    PrefixCommand'>(**{'prefix': 'ex', 'uri': Uri('http://www.example.com/example#')})
     '''
 
 def graph_test():
@@ -37,6 +39,12 @@ def graph_test():
     >>> g.execute(Statement(Uri('node1'), QUri('p','node2'), Uri('node3'), Uri('node4')))
     >>> g.statements
     {Uri('node1'): {QUri('p', 'node2'): set([Uri('node3'), Uri('node4')])}}
+    >>> prefix = PrefixCommand(prefix='ex', uri=Uri('http://www.example.com/example#'))
+    >>> g.execute(prefix)
+    >>> g.prefixes
+    {'bvr': Uri('http://www.beaver-lang.org/1/0/0/syntax#'), 'rdf': Uri('http://www.w3.org/1999/02/22-rdf-syntax-ns#'), 'ex': Uri('http://www.example.com/example#')}
+    >>> str(Uri('http://www.example.com/example#sample').apply_prefix(g.prefixes))
+    'ex:sample'
     '''
 
 doctest.testmod()
