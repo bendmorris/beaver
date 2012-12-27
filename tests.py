@@ -51,6 +51,8 @@ def graph_test():
     >>> g.draw('test.png')
     >>> os.path.exists('test.png')
     True
+    >>> g.parse(text='@load <test.xml>')
+    >>> g.parse(text='@import <test.bvr>')
     '''
 
 doctest.testmod()
