@@ -6,6 +6,7 @@ import readline
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
+from __init__ import __version__
 
 
 arg_parser = argparse.ArgumentParser()
@@ -14,7 +15,12 @@ arg_parser.add_argument('-d', '--draw', help='output an image of the resulting g
 arg_parser.add_argument('-i', '--interactive', help='enter interactive mode after interpreting file', action='store_true')
 arg_parser.add_argument('-e', '--eval', help='string to be evaluated')
 arg_parser.add_argument('-v', '--verbose', help='print each triple statement as evaluated', action='store_true')
+arg_parser.add_argument('--version', help='print version and exit', action='store_true')
 args = arg_parser.parse_args()
+
+if args.version:
+    print __version__
+    sys.exit()
 
 if not sys.stdin.isatty():
     # read and evaluate piped input
@@ -32,6 +38,9 @@ def main():
     
     if (not args.file and not args.eval) or args.interactive:
         exit = False
+
+        print '''Beaver %s''' % __version__
+
         while not exit:
             graph.verbose = args.verbose
         
