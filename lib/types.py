@@ -46,7 +46,7 @@ class QUri(Uri):
     def apply_prefixes(self, prefixes): pass
     
 class Variable(object):
-    def __init__(self, ident):
+    def __init__(self, *ident):
         self.ident = ident
     def __str__(self): return '?%s' % self.ident
     def __repr__(self): return 'Variable(%s)' % repr(self.ident)

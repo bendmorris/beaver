@@ -54,7 +54,7 @@ class Graph(object):
             
         elif isinstance(stmt, Command):
             if self.verbose: print str(stmt)
-            stmt.execute(self)
+            stmt.execute(self, context)
             
         elif hasattr(stmt, '__iter__'):
             for substmt in stmt:

@@ -3,7 +3,7 @@ import urllib2
 
 
 class Command(object):
-    def execute(self, graph):
+    def execute(self, graph, context={}):
         raise BeaverException('This command (%s) has not yet been implemented.' % self.__doc__)
     def __repr__(self): return '%s(**%s)' % (str(self.__class__).split('.')[-1], self.__dict__)
         
@@ -13,7 +13,7 @@ class PrefixCommand(Command):
         self.prefix = prefix
         self.uri = uri
     def __str__(self): return '@prefix %s: %s' % (self.prefix, self.uri)
-    def execute(self, graph):
+    def execute(self, graph, context={}):
         graph.prefixes[self.prefix] = self.uri
         
 class DefCommand(Command):
@@ -23,7 +23,7 @@ class DefCommand(Command):
         self.pattern = pattern
         self.triples = triples
     def __str__(self): return '%s %s = %s' % (self.ident, self.pattern, self.triples)
-    def execute(self, graph):
+    def execute(self, graph, context={}):
         ident = str(self.ident)
         if not ident in graph.defs: graph.defs[ident] = []
         graph.defs[ident] = [(self.pattern, self.triples)] + graph.defs[ident]
@@ -34,7 +34,7 @@ class CallCommand(Command):
         self.ident = ident
         self.pattern = pattern
     def __str__(self): return '%s %s' % (self.ident, self.pattern)
-    def execute(self, graph):
+    def execute(self, graph, context={}):
         try: patterns = graph.defs[str(self.ident)]
         except KeyError: raise BeaverException('Undefined variable: %s' % self.ident)
         
@@ -63,7 +63,7 @@ class ImportCommand(Command):
     def __init__(self, uri):
         self.uri = uri
     def __str__(self): return '@import %s' % self.uri
-    def execute(self, graph):
+    def execute(self, graph, context={}):
         try:
             stream = urllib2.urlopen(str(self.uri)[1:-1])
             graph.parse(stream=stream)
@@ -77,7 +77,7 @@ class LoadCommand(Command):
     def __init__(self, uri):
         self.uri = uri
     def __str__(self): return '@load %s' % self.uri
-    def execute(self, graph):
+    def execute(self, graph, context={}):
         import RDF
         
         parser = RDF.Parser('rdfxml')
@@ -109,12 +109,12 @@ class DrawCommand(Command):
     def __init__(self, uri):
         self.uri = uri
     def __repr__(self): return '@draw %s' % self.uri
-    def execute(self, graph):
+    def execute(self, graph, context={}):
         graph.draw(filename=str(self.uri)[1:-1])
         
         
 class ReinitCommand(Command):
     '''Remove triples from the graph.'''
     def __repr__(self): return '@reinit'
-    def execute(self, graph):
+    def execute(self, graph, context={}):
         graph.reinit()

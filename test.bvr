@@ -19,10 +19,10 @@
       3 <http://www.bob.com> .
 
 
-?b ?a ?b ?c = { ?a ?b ?c . }
+?b ?a ?b ?c = { ?a ?b ?c } .
 
 # abcdefg
 
 # @import <file:///home/ben/Dropbox/Dev/beaver/test.rdf> .
 
-?b 1 3 2 .
+?b 1 2 3 .
