@@ -1,6 +1,11 @@
 import argparse
 import sys
 from lib.graph import Graph
+from lib.types import BeaverException
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('file', nargs='*', help='file to be interpreted')
@@ -48,12 +53,20 @@ def main():
                 elif next_line in ('exit', 'quit'):
                     exit = True
                 else:
-                    graph.parse(text=next_line)
+                    stmts = graph.parse(text=next_line)
+                    if stmts == 0:
+                        raise BeaverException('Failed to parse line: %s' % next_line)
+                    
             except EOFError:
                 print
                 exit = True
+                
             except KeyboardInterrupt:
                 print
+                continue
+                
+            except Exception as e:
+                print e
                 continue
             
         
