@@ -82,9 +82,9 @@ class Graph:
             s = str(s)
             if s.startswith('<') and s.endswith('>'): s = s[1:-1]
             
-            bad_chars = "<>:"
+            bad_chars = "<>:'\""
             for char in bad_chars:
-                s = s.replace(char, '\\%s' % char)
+                s = s.replace(char, '')
                 
             return s
         
