@@ -73,15 +73,23 @@ class Graph:
             self.execute(stmt)
         
     def draw(self, filename):
-        try: import pygraphviz as pgv
-        except ImportError: raise BeaverException('pygraphviz is required to draw graphs.')
+        try: import pydot
+        except ImportError: raise BeaverException('pydot is required to draw graphs.')
         
-        g = pgv.AGraph(overlap=False, strict=False, label_scheme=2)
+        graph = pydot.Dot(graph_type='digraph')
+        
+        def format_label(s):
+            bad_chars = "<>:"
+            s = str(s)
+            for char in bad_chars:
+                s = s.replace(char, '\\%s' % char)
+            return s
+        
         for s in self.statements:
-            g.add_node(str(s))
+            #g.add_node(str(s))
             for v, objs in self.statements[s].items():
                 for o in objs:
-                    g.add_node(str(o))
-                    g.add_edge(str(s), str(o), label=str(v), dir='forward')
-        g.layout(prog='dot')
-        g.draw(filename)
+                    graph.add_edge(pydot.Edge(format_label(s), format_label(o), label='"%s"' % format_label(v)))
+                    
+        img_format = filename.split('.')[-1]
+        graph.write(filename, format=img_format)
