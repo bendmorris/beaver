@@ -32,6 +32,7 @@ def parser_test():
     DefCommand(**{'pattern': Pattern(([],)), 'ident': Variable(('a',)), 'triples': (Statement(1, 2, 3, ()),)})
     >>> expression.parseString('@prefix ex: <http://www.example.com/example#>', parseAll=True)[0]
     PrefixCommand(**{'prefix': 'ex', 'uri': Uri('http://www.example.com/example#')})
+    >>> expression.parseString('@for @a in 1 2 3 4 5 { @a <b> <c> . }')
     '''
 
 def graph_test():
@@ -54,9 +55,13 @@ def graph_test():
     >>> os.path.exists('test.png')
     True
     >>> g.parse(text='@load <test.xml>')
+    1
     >>> g.parse(text='@import <test.bvr>')
+    1
     >>> g.parse(text='@reinit')
+    1
     >>> g.parse(text='@load <http://www.nexml.org/nexml/examples/trees.rdf>')
+    1
     >>> sorted([str(s) for s in g.statements.keys()])[:5]
     ['<http://example.org/e1>', '<http://example.org/e2>', '<http://example.org/e3>', '<http://example.org/e4>', '<http://example.org/e5>']
     '''
