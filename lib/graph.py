@@ -93,8 +93,12 @@ class Graph(object):
         else:
             raise BeaverException('Must specify filename, text, or stream to parse.')
         
+        stmts = 0
         for stmt, start, end in parsed:
+            stmts += 1
             self.execute(stmt)
+        
+        return stmts
         
     def draw(self, filename, use='pydot'):
         if use=='pygraphviz':
