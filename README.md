@@ -2,13 +2,20 @@ Beaver is a semantic programming language. It accepts and manipulates data in th
 
 To install, navigate to the source directory and run "python setup.py install".
 
-Currently, Beaver is an interpreted superset of the Turtle RDF specification. (RDF/XML support is planned.)
-Therefore, any valid Turtle file is also valid Beaver code.
+Currently, Beaver is an interpreted superset of the Turtle RDF specification. Therefore, any valid 
+Turtle file is also valid Beaver code. RDF/XML can also be loaded.
 
-Other commands include:
 
-    # open another Beaver file (local or online) and parse the results into the current graph
-    @import <uri>
+Examples of Beaver commands:
+
+    # open another Beaver or Turtle file (local or online) and parse the results into the current graph
+    @import <data_file.ttl>
+
+    # load RDF/XML file
+    @load <http://www.nexml.org/nexml/examples/trees.rdf>
+
+    # reinitialize everything
+    @reinit
     
     # define and call functions
     ?create_edge ?child ?parent ?edge = {
@@ -21,8 +28,15 @@ Other commands include:
     ?create_edge <node1> <node2> <edge1> .
     ?create_edge <node2> <node3> <edge2> .
 
+    # save the current graph as an image file
+    @draw <test.png>
+    @draw <test2.jpg>
 
-Using the interpreter, you can save an image of the resulting graph. For example:
+    # remove triples from the graph
+    @del <node1> <part_of_edge> <edge1> .
+
+
+Using the interpreter, you can save images of the resulting graphs. For example:
 
     beaver -d test.png -e "<ben> a <human> ; <likes> <carol>, <football> . <carol> a <human> ; <likes> <ben>, <anime> . <ruben> a <human>, <baby> ."
 
