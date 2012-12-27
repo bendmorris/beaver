@@ -2,6 +2,7 @@ import argparse
 import sys
 from lib.graph import Graph
 from lib.types import BeaverException
+import readline
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
