@@ -5,7 +5,7 @@ import urllib2
 class Command(object):
     def execute(self, graph, context={}):
         raise BeaverException('This command (%s) has not yet been implemented.' % self.__doc__)
-    def __repr__(self): return '%s(**%s)' % (str(self.__class__).split('.')[-1], self.__dict__)
+    def __repr__(self): return '%s(**%s)' % (str(self.__class__.__name__).split('.')[-1], self.__dict__)
         
 class PrefixCommand(Command):
     '''Define a URI prefix.'''

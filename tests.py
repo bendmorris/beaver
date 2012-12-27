@@ -25,13 +25,13 @@ def parser_test():
     >>> expression.parseString('@draw <test.png>', parseAll=True)[0]
     @draw <test.png>
     >>> expression.parseString('@import <test.ttl>', parseAll=True)[0]
-    ImportCommand'>(**{'uri': Uri('test.ttl')})
+    ImportCommand(**{'uri': Uri('test.ttl')})
     >>> expression.parseString('@load <test.xml>', parseAll=True)[0]
-    LoadCommand'>(**{'uri': Uri('test.xml')})
+    LoadCommand(**{'uri': Uri('test.xml')})
     >>> expression.parseString('?a = 1 2 3 .', parseAll=True)[0]
-    DefCommand'>(**{'pattern': Pattern(([],)), 'ident': Variable(('a',)), 'triples': (Statement(1, 2, 3, ()),)})
+    DefCommand(**{'pattern': Pattern(([],)), 'ident': Variable(('a',)), 'triples': (Statement(1, 2, 3, ()),)})
     >>> expression.parseString('@prefix ex: <http://www.example.com/example#>', parseAll=True)[0]
-    PrefixCommand'>(**{'prefix': 'ex', 'uri': Uri('http://www.example.com/example#')})
+    PrefixCommand(**{'prefix': 'ex', 'uri': Uri('http://www.example.com/example#')})
     '''
 
 def graph_test():
