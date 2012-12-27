@@ -41,3 +41,12 @@ Using the interpreter, you can save images of the resulting graphs. For example:
     beaver -d test.png -e "<ben> a <human> ; <likes> <carol>, <football> . <carol> a <human> ; <likes> <ben>, <anime> . <ruben> a <human>, <baby> ."
 
 ![beaver graph](http://i.imgur.com/A067V.jpg)
+
+Beaver is written in Python and can also be used as a Python library, e.g.:
+
+    from beaver import Graph
+    
+    graph = Graph()
+    graph.parse(text='<beaver> <is> <great> .')
+    
+    graph.draw('output.png')
