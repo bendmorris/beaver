@@ -32,8 +32,8 @@ pattern.setParseAction(lambda x: Pattern(*x))
 subj = triplet
 verb = wildcard | triplet | rdftype
 obj = wildcard | triplet
-triple = (subj + verb + obj).setParseAction(lambda x: Stmt(*x))
-continued_triple = (';' + verb + obj).setParseAction(lambda x: Stmt(*x))
+triple = (subj + verb + obj + Optional(OneOrMore(Suppress(',') + obj))).setParseAction(lambda x: Stmt(*x))
+continued_triple = (';' + verb + obj + Optional(OneOrMore(Suppress(',') + obj))).setParseAction(lambda x: Stmt(*x))
 triples = Forward()
 triples << (
             (triple + Suppress('.')) | 
