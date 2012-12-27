@@ -47,12 +47,16 @@ def graph_test():
     >>> str(Uri('http://www.example.com/example#sample').apply_prefix(g.prefixes))
     'ex:sample'
     >>> try: os.remove('test.png')
-    ... except: pass
+    ... except OSError: pass
     >>> g.draw('test.png')
     >>> os.path.exists('test.png')
     True
     >>> g.parse(text='@load <test.xml>')
     >>> g.parse(text='@import <test.bvr>')
+    >>> g.parse(text='@reinit')
+    >>> g.parse(text='@load <http://www.nexml.org/nexml/examples/trees.rdf>')
+    >>> sorted([str(s) for s in g.statements.keys()])[:5]
+    ['<http://example.org/e1>', '<http://example.org/e2>', '<http://example.org/e3>', '<http://example.org/e4>', '<http://example.org/e5>']
     '''
 
 doctest.testmod()
