@@ -17,4 +17,7 @@ setup(name='beaver',
             'beaver = beaver.beaver:main',
         ],
       },
+      install_requires=[
+                        'pyparsing',
+                        ],
       )
