@@ -17,3 +17,10 @@ Other commands include:
     }
     
     ?create_edge <node1> <node2> <edge1> .
+
+
+Using the interpreter, you can save an image of the resulting graph:
+
+    beaver -d test.png -e "<ben> a <human> ; <likes> <carol> ; <likes> <football> . <carol> a <human> ; <likes> <ben> ; <likes> <anime> . <ruben> a <human> ; a <baby> ."
+
+![beaver graph](http://i.imgur.com/A067V.jpg)
