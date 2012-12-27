@@ -3,6 +3,12 @@ from command import Command
 from parser import parse_string, parse_file, parse_stream
 
 
+
+default = '''
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix bvr: <http://www.beaver-lang.org/1/0/0/syntax#> .
+'''
+
 class Graph(object):
     '''A collection of triples.'''
     def __init__(self, verbose=False):
@@ -16,7 +22,7 @@ class Graph(object):
         self.prefixes = {}
         self.last_subj = None
         
-        self.parse(filename='default.bvr')
+        self.parse(text=default)
         
         self.defs = {}
 
