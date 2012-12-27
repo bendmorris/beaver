@@ -51,3 +51,5 @@ Beaver is written in Python and can also be used as a Python library, e.g.:
     graph.parse(text='<beaver> <is> <great> .')
     
     graph.draw('output.png')
+
+![beaver graph](http://i.imgur.com/qQZMK.jpg)
