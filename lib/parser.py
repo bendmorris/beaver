@@ -8,7 +8,7 @@ from command import *
 # expressions
 expression = Forward()
 
-url = Word(alphanums + "0123456789-._~:/?#[]@!$&'()*+,;=")
+url = Word(alphanums + "-._~:/?#[]@!$&'()*+,;=")
 ident = Word(alphanums + "_")
 wildcard = Literal('*')
 wildcard.setParseAction(lambda x: Uri(*x))
@@ -35,7 +35,7 @@ literal = literalString | literalNumber
 
 variable = (Suppress('?') + Optional(ident, default=''))
 variable.setParseAction(lambda x: Variable(*x))
-triplet = (uri | literal | variable)
+triplet = (variable | uri | literal)
 triplet.setParseAction(lambda x: x[0])
 pattern = OneOrMore(triplet)
 pattern.setParseAction(lambda x: Pattern(*x))
@@ -48,8 +48,7 @@ triple.setParseAction(lambda x: Stmt(*x))
 continued_triple = (';' + verb + obj + Optional(OneOrMore(Suppress(',') + obj)))
 continued_triple.setParseAction(lambda x: Stmt(*x))
 triples = (
-           (triple) | 
-           (triple + OneOrMore(continued_triple))            
+           (triple + OneOrMore(continued_triple)) | triple 
            )
             
 # commands
@@ -59,21 +58,25 @@ import_cmd = (Suppress('@import') + uri).setParseAction(lambda x: ImportCommand(
 del_cmd = (Suppress('@del') + expression).setParseAction(lambda x: DelCommand(*x))
 draw_cmd = (Suppress('@draw') + uri).setParseAction(lambda x: DrawCommand(*x))
 reinit_cmd = (Suppress('@reinit')).setParseAction(lambda x: ReinitCommand())
-definition_cmd = (variable + Optional(pattern, default=Pattern([])) + Suppress('=') + expression).setParseAction(lambda x: DefCommand(*x))
-call_cmd = (variable + Optional(pattern, default=Pattern([]))).setParseAction(lambda x: CallCommand(*x))
+function_def = (variable + pattern + Suppress('=') + expression)
+function_def.setParseAction(lambda x: DefCommand(*x))
+var_def = (variable + Suppress('=') + (expression | triplet))
+var_def.setParseAction(lambda x: DefCommand(x[0], Pattern([]), *x[1:]))
+definition_cmd = (function_def | var_def)
+call_cmd = (variable + Optional(pattern, default=Pattern([])))
+call_cmd.setParseAction(lambda x: CallCommand(*x))
 command = (
            prefix_cmd | 
            load_cmd | 
            import_cmd | 
            del_cmd |
            draw_cmd |
-           reinit_cmd |
-           definition_cmd |
-           call_cmd
+           reinit_cmd
            ) + Optional(".").suppress()
            
-expression = (((comment | triples | command) + Suppress('.')) | 
-               (Suppress('{') + OneOrMore(expression) + Suppress('}')))
+expression << ((Suppress('{') + OneOrMore(expression) + Suppress('}')) |
+               ((comment | definition_cmd | call_cmd | triples | command))
+                ) + Optional('.').suppress()
 
 
 def parse_string(string):

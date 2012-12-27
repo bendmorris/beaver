@@ -55,5 +55,5 @@ class Variable(object):
 class Pattern(object):
     def __init__(self, *vars):
         self.vars = vars
-    def __str__(self): return ' '.join([str(var) for var in self.vars])
+    def __str__(self): return (' ' if self.vars else '') + ' '.join([str(var) for var in self.vars])
     def __repr__(self): return 'Pattern(%s)' % repr(self.vars)

@@ -1,4 +1,4 @@
-from types import BeaverException, Variable, Uri, Statement
+from types import BeaverException, Variable, Uri, Statement, Pattern
 import urllib2
 
 
@@ -22,7 +22,7 @@ class DefCommand(Command):
         self.ident = ident
         self.pattern = pattern
         self.triples = triples
-    def __str__(self): return '%s %s = %s' % (self.ident, self.pattern, self.triples)
+    def __str__(self): return '%s%s = %s' % (self.ident, self.pattern, self.triples)
     def execute(self, graph, context={}):
         ident = str(self.ident)
         if not ident in graph.defs: graph.defs[ident] = []
@@ -33,7 +33,7 @@ class CallCommand(Command):
     def __init__(self, ident, pattern):
         self.ident = ident
         self.pattern = pattern
-    def __str__(self): return '%s %s' % (self.ident, self.pattern)
+    def __str__(self): return '%s%s' % (self.ident, self.pattern if self.pattern else '')
     def execute(self, graph, context={}):
         try: patterns = graph.defs[str(self.ident)]
         except KeyError: raise BeaverException('Undefined variable: %s' % self.ident)
@@ -51,9 +51,11 @@ class CallCommand(Command):
                         
                     
             if match:
-                graph.execute(stmts, context={str(to_match): given 
-                                              for given, to_match
-                                              in zip(self.pattern.vars, pattern.vars)})
+                context = {}
+                for given, to_match in zip(self.pattern.vars, pattern.vars):
+                    if isinstance(to_match, Variable):
+                        context[to_match] = [(Pattern([]), given)]
+                graph.execute(stmts, context)
                 return
                 
         raise BeaverException('No pattern matched: %s %s' % (self.ident, self.pattern))

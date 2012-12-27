@@ -43,9 +43,17 @@ class Graph(object):
                 p = getattr(stmt, part)
                 if isinstance(p, Variable):
                     id = str(p)
-                    if id in context: setattr(stmt, part, context[id])
-                    elif id in self.defs: setattr(stmt, part, defs[id])
-                    else: raise BeaverException('Undefined variable: %s' % id)
+                    matched = False
+                    for varset in (context, self.defs):
+                        if matched: break
+                        if id in context:
+                            for pattern, match in context[id]:
+                                if pattern.vars == []:
+                                    setattr(stmt, part, context[id])
+                                    matched = True
+                                    break
+
+                    if not matched: raise BeaverException('Undefined variable: %s' % id)
                     
             self.add_stmt(stmt)
             
