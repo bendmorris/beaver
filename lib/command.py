@@ -2,7 +2,7 @@ from types import BeaverException, Variable, Uri, Statement
 import urllib2
 
 
-class Command:
+class Command(object):
     def execute(self, graph):
         raise BeaverException('This command (%s) has not yet been implemented.' % self.__doc__)
     def __repr__(self): return '%s(**%s)' % (str(self.__class__).split('.')[-1], self.__dict__)

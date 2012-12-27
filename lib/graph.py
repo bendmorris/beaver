@@ -2,7 +2,8 @@ from types import Statement, BeaverException, Variable
 from command import Command
 from parser import parse_string, parse_file, parse_stream
 
-class Graph:
+
+class Graph(object):
     '''A collection of triples.'''
     def __init__(self, verbose=False):
         self.verbose = verbose
