@@ -72,23 +72,50 @@ class Graph:
         for stmt, start, end in parsed:
             self.execute(stmt)
         
-    def draw(self, filename):
-        try: import pygraphviz as pgv
-        except ImportError: raise BeaverException('pygraphviz is required to draw graphs.')
-        
-        g = pgv.AGraph(overlap=False, strict=False)
-        
-        def format_label(s):
-            s = str(s)
-            if s.startswith('<') and s.endswith('>'): s = s[1:-1]
+    def draw(self, filename, use='pydot'):
+        if use=='pygraphviz':
+            try: import pygraphviz as pgv
+            except ImportError: raise BeaverException('pygraphviz is required to draw graphs.')
             
-            return s
+            g = pgv.AGraph(overlap=False, strict=False)
+            
+            def format_label(s):
+                s = str(s)
+                if s.startswith('<') and s.endswith('>'): s = s[1:-1]
+                
+                return s
 
-        for s in self.statements:
-            g.add_node(format_label(s))
-            for v, objs in self.statements[s].items():
-                for o in objs:
-                    g.add_node(format_label(o))
-                    g.add_edge(format_label(s), format_label(o), label=format_label(v), dir='forward')
-        g.layout(prog='dot')
-        g.draw(filename)
+            for s in self.statements:
+                g.add_node(format_label(s))
+                for v, objs in self.statements[s].items():
+                    for o in objs:
+                        g.add_node(format_label(o))
+                        g.add_edge(format_label(s), format_label(o), label=format_label(v), dir='forward')
+            g.layout(prog='dot')
+            g.draw(filename)
+            
+    
+        elif use=='pydot':
+            try: import pydot
+            except ImportError: raise BeaverException('pydot is required to draw graphs.')
+            
+            graph = pydot.Dot(graph_type='digraph')
+            
+            def format_label(s):
+                s = str(s)
+                if s.startswith('<') and s.endswith('>'): s = s[1:-1]
+                
+                bad_chars = "<>:'\""
+                for char in bad_chars:
+                    s = s.replace(char, '')
+                    
+                return s
+            
+            for s in self.statements:
+                #g.add_node(str(s))
+                for v, objs in self.statements[s].items():
+                    for o in objs:
+                        graph.add_edge(pydot.Edge(format_label(s), format_label(o), label='"%s"' % format_label(v)))
+                        
+            img_format = filename.split('.')[-1]
+            graph.write(filename, format=img_format)
