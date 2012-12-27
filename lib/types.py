@@ -20,11 +20,20 @@ Stmt = Statement
 class Uri(object):
     def __init__(self, url):
         self.url = str(url)
-        
     def __str__(self): return '<%s>' % self.url
     def __repr__(self): return 'Uri(%s)' % repr(str(self.url))
     def __add__(self, x): return Uri(str(self) + str(x))
     def __eq__(self, x): return str(self) == str(x)
+    def __hash__(self): return hash(str(self))
+    
+    def apply_prefix(self, prefixes):
+        this_uri = str(self)[1:-1]
+        # try to apply prefixes, by the length of their respective URIs
+        for prefix, uri in sorted(prefixes.items(), key=lambda l: len(str(l[1])), reverse=True):
+            match_uri = str(uri)[1:-1]
+            if this_uri.startswith(match_uri) and len(this_uri) > len(match_uri):
+                return QUri(prefix, this_uri.replace(match_uri, '', 1))
+        return self
 
 class QUri(Uri):
     def __init__(self, prefix, url=None):
@@ -34,6 +43,7 @@ class QUri(Uri):
         self.url = str(url)
     def __str__(self): return '%s:%s' % (self.prefix, self.url)
     def __repr__(self): return 'QUri(%s, %s)' % (repr(str(self.prefix)), repr(str(self.url)))
+    def apply_prefixes(self, prefixes): pass
     
 class Variable(object):
     def __init__(self, ident):

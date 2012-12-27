@@ -1,4 +1,4 @@
-from types import Statement, BeaverException, Variable
+from types import Statement, BeaverException, Variable, Uri
 from command import Command
 from parser import parse_string, parse_file, parse_stream
 
@@ -9,7 +9,7 @@ class Graph(object):
         self.verbose = verbose
     
         self.statements = {}
-        self.prefix_to_uri = {}
+        self.prefixes = {}
         self.last_subj = None
         
         self.parse(filename='default.bvr')
@@ -22,8 +22,7 @@ class Graph(object):
         else: 
             self.last_subj = subj = stmt.subj
         
-        subj = str(subj)
-        verb = str(stmt.verb)
+        verb = stmt.verb
         obj = stmt.obj
         
         if not subj in self.statements:
@@ -63,7 +62,7 @@ class Graph(object):
     def uri(self, uri):
         if hasattr(uri, 'prefix'):
             try:
-                base = self.prefix_to_uri[uri.prefix]
+                base = self.prefixes[uri.prefix]
             except KeyError:
                 raise BeaverException('Prefix %s is not defined.' % uri.prefix)
         else: base = ''
@@ -90,6 +89,9 @@ class Graph(object):
             graph = pgv.AGraph(overlap=False, strict=False)
             
             def format_label(s):
+                if isinstance(s, Uri):
+                    s = s.apply_prefix(self.prefixes)
+                
                 s = str(s)
                 if s.startswith('<') and s.endswith('>'): s = s[1:-1]
                 
@@ -129,8 +131,12 @@ class Graph(object):
                 return 'x%s' % s
                 
             def format_label(s):
+                if isinstance(s, Uri):
+                    s = s.apply_prefix(self.prefixes)
+            
                 s = str(s)
                 if s.startswith('<') and s.endswith('>'): s = s[1:-1]
+                
                 if (s.startswith('"') and s.endswith('"')): 
                     s = '"\\"%s\\""' % s[1:-1]
                 else:

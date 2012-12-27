@@ -14,7 +14,7 @@ class PrefixCommand(Command):
         self.uri = uri
     def __str__(self): return '@prefix %s: %s' % (self.prefix, self.uri)
     def execute(self, graph):
-        graph.prefix_to_uri[self.prefix] = self.uri
+        graph.prefixes[self.prefix] = self.uri
         
 class DefCommand(Command):
     '''Define a function pattern.'''
