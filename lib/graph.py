@@ -28,26 +28,35 @@ class Graph(object):
         
         if not subj in self.statements:
             self.statements[subj] = {}
-        if not verb in self.statements[subj]: self.statements[subj][verb] = []
-        self.statements[subj][verb] += stmt.obj
+        if not verb in self.statements[subj]: self.statements[subj][verb] = set()
+        self.statements[subj][verb].add(stmt.obj)
         
         if self.verbose: print '%s .' % stmt
         
     def execute(self, stmt, context={}):
         if isinstance(stmt, Statement):
             for part in ['subj', 'verb', 'obj']:
-                if isinstance(getattr(stmt, part), Variable):
-                    id = str(getattr(stmt, part))
+                p = getattr(stmt, part)
+                if isinstance(p, Variable):
+                    id = str(p)
                     if id in context: setattr(stmt, part, context[id])
                     elif id in self.defs: setattr(stmt, part, defs[id])
                     else: raise BeaverException('Undefined variable: %s' % id)
+                    
             self.add_stmt(stmt)
+            
+            if len(stmt.other_objs) > 0:
+                self.execute([Statement(stmt.subj, stmt.verb, o) for o in stmt.other_objs], context)
+            
         elif isinstance(stmt, Command):
             if self.verbose: print str(stmt)
             stmt.execute(self)
+            
         elif hasattr(stmt, '__iter__'):
             for substmt in stmt:
                 self.execute(substmt, context)
+            return
+            
         else:
             raise BeaverException('Unrecognized statement: %s' % stmt)
         

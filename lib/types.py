@@ -6,12 +6,13 @@ class BeaverException(Exception):
 
 class Statement(object):
     '''A triple statement.'''
-    def __init__(self, subj, verb, *obj):
+    def __init__(self, subj, verb, obj, *other_objs):
         self.subj = subj
         self.verb = verb
         self.obj = obj
-    def __str__(self): return '%s %s %s' % (self.subj, self.verb, ', '.join([str(o) for o in self.obj]))
-    def __repr__(self): return 'Statement(%s, %s, %s)' % (repr(self.subj), repr(self.verb), repr(self.obj))
+        self.other_objs = other_objs
+    def __str__(self): return '%s %s %s' % (self.subj, self.verb, ', '.join([str(self.obj)] + [str(o) for o in self.other_objs]))
+    def __repr__(self): return 'Statement(%s, %s, %s, %s)' % (repr(self.subj), repr(self.verb), repr(self.obj), '(%s)' % ','.join([repr(r) for f in self.other_objs]))
 
 Stmt = Statement
 
