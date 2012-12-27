@@ -101,3 +101,20 @@ class DelCommand(Command):
     '''Remove triples from the graph.'''
     def __init__(self, triples):
         self.triples = triples
+    def __repr__(self): return '@del %s' % triples
+        
+        
+class DrawCommand(Command):
+    '''Remove triples from the graph.'''
+    def __init__(self, uri):
+        self.uri = uri
+    def __repr__(self): return '@draw %s' % self.uri
+    def execute(self, graph):
+        graph.draw(filename=str(self.uri)[1:-1])
+        
+        
+class ReinitCommand(Command):
+    '''Remove triples from the graph.'''
+    def __repr__(self): return '@reinit'
+    def execute(self, graph):
+        graph.reinit()

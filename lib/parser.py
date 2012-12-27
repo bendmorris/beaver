@@ -46,12 +46,17 @@ prefix_cmd = (Suppress('@prefix') + ident + Suppress(":") + uri).setParseAction(
 load_cmd = (Suppress('@load') + uri).setParseAction(lambda x: LoadCommand(*x))
 import_cmd = (Suppress('@import') + uri).setParseAction(lambda x: ImportCommand(*x))
 del_cmd = (Suppress('@del') + triples).setParseAction(lambda x: DelCommand(*x))
+draw_cmd = (Suppress('@draw') + uri).setParseAction(lambda x: DrawCommand(*x))
+reinit_cmd = (Suppress('@reinit')).setParseAction(lambda x: ReinitCommand())
 definition_cmd = (variable + Optional(pattern, default=Pattern([])) + Suppress('=') + triples).setParseAction(lambda x: DefCommand(*x))
 call_cmd = (variable + Optional(pattern, default=Pattern([]))).setParseAction(lambda x: CallCommand(*x))
 command = (
            prefix_cmd | 
            load_cmd | 
            import_cmd | 
+           del_cmd |
+           draw_cmd |
+           reinit_cmd |
            definition_cmd |
            call_cmd
            ) + Optional(".").suppress()

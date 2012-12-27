@@ -8,6 +8,10 @@ class Graph(object):
     def __init__(self, verbose=False):
         self.verbose = verbose
     
+        self.reinit()
+        
+        
+    def reinit(self):
         self.statements = {}
         self.prefixes = {}
         self.last_subj = None
@@ -15,6 +19,7 @@ class Graph(object):
         self.parse(filename='default.bvr')
         
         self.defs = {}
+
 
     def add_stmt(self, stmt):
         if stmt.subj == ';': 
@@ -30,7 +35,7 @@ class Graph(object):
         if not verb in self.statements[subj]: self.statements[subj][verb] = set()
         self.statements[subj][verb].add(stmt.obj)
         
-        if self.verbose: print '%s .' % stmt
+        if self.verbose: print str(stmt)
         
     def execute(self, stmt, context={}):
         if isinstance(stmt, Statement):
