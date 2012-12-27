@@ -48,6 +48,8 @@ def graph_test():
     'ex:sample'
     >>> try: os.remove('test.png')
     ... except OSError: pass
+    >>> os.path.exists('test.png')
+    False
     >>> g.draw('test.png')
     >>> os.path.exists('test.png')
     True
