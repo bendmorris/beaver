@@ -28,7 +28,7 @@ class Graph:
         if not subj in self.statements:
             self.statements[subj] = {}
         if not verb in self.statements[subj]: self.statements[subj][verb] = []
-        self.statements[subj][verb].append(stmt.obj)
+        self.statements[subj][verb] += stmt.obj
         
         if self.verbose: print '%s .' % stmt
         
@@ -77,7 +77,7 @@ class Graph:
             try: import pygraphviz as pgv
             except ImportError: raise BeaverException('pygraphviz is required to draw graphs.')
             
-            g = pgv.AGraph(overlap=False, strict=False)
+            graph = pgv.AGraph(overlap=False, strict=False)
             
             def format_label(s):
                 s = str(s)
@@ -85,14 +85,21 @@ class Graph:
                 
                 return s
 
+            nodes = set()
+            def new_node(s):
+                node = format_label(s)
+                if not node in nodes:
+                    graph.add_node(node)
+                    nodes.add(node)
+                    
             for s in self.statements:
-                g.add_node(format_label(s))
+                new_node(s)
                 for v, objs in self.statements[s].items():
                     for o in objs:
-                        g.add_node(format_label(o))
-                        g.add_edge(format_label(s), format_label(o), label=format_label(v), dir='forward')
-            g.layout(prog='dot')
-            g.draw(filename)
+                        new_node(o)
+                        graph.add_edge(format_label(s), format_label(o), label=format_label(v), dir='forward')
+            graph.layout(prog='dot')
+            graph.draw(filename)
             
     
         elif use=='pydot':
@@ -101,21 +108,39 @@ class Graph:
             
             graph = pydot.Dot(graph_type='digraph')
             
-            def format_label(s):
+            def format_node_name(s):
                 s = str(s)
                 if s.startswith('<') and s.endswith('>'): s = s[1:-1]
                 
-                bad_chars = "<>:'\""
+                bad_chars = "<>'\":"
                 for char in bad_chars:
                     s = s.replace(char, '')
-                    
+                
+                return 'x%s' % s
+                
+            def format_label(s):
+                s = str(s)
+                if s.startswith('<') and s.endswith('>'): s = s[1:-1]
+                if (s.startswith('"') and s.endswith('"')): 
+                    s = '"\\"%s\\""' % s[1:-1]
+                else:
+                    s = '"%s"' % s
                 return s
             
+            nodes = set()
+            def new_node(s):
+                node = format_node_name(s)
+                label = format_label(s)
+                if not node in nodes:
+                    graph.add_node(pydot.Node(node, label=label))
+                    nodes.add(node)
+                    
             for s in self.statements:
-                #g.add_node(str(s))
+                new_node(s)
                 for v, objs in self.statements[s].items():
                     for o in objs:
-                        graph.add_edge(pydot.Edge(format_label(s), format_label(o), label='"%s"' % format_label(v)))
+                        new_node(o)
+                        graph.add_edge(pydot.Edge(format_node_name(s), format_node_name(o), label=format_label(v)))
                         
             img_format = filename.split('.')[-1]
             graph.write(filename, format=img_format)
