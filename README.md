@@ -1,11 +1,13 @@
 Beaver is a semantic programming language. It accepts and manipulates data in the form of RDF graphs.
 
+To install, navigate to the source directory and run "python setup.py install".
+
 Currently, Beaver is an interpreted superset of the Turtle RDF specification. (RDF/XML support is planned.)
 Therefore, any valid Turtle file is also valid Beaver code.
 
 Other commands include:
 
-    # open another Beaver file and parse the results into the current graph
+    # open another Beaver file (local or online) and parse the results into the current graph
     @import <uri>
     
     # define and call functions
