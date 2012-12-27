@@ -23,7 +23,9 @@ class Graph(object):
 
     def add_stmt(self, stmt):
         if stmt.subj == ';': 
-            subj = self.last_subj
+            if self.last_subj:
+                subj = self.last_subj
+            else: raise BeaverException('Unspecified subject: %s' % stmt)
         else: 
             self.last_subj = subj = stmt.subj
         

@@ -2,6 +2,7 @@ from lib.types import *
 from lib.graph import *
 from lib.command import *
 from lib.parser import *
+import os
 import doctest
 
 
@@ -45,6 +46,11 @@ def graph_test():
     {'bvr': Uri('http://www.beaver-lang.org/1/0/0/syntax#'), 'rdf': Uri('http://www.w3.org/1999/02/22-rdf-syntax-ns#'), 'ex': Uri('http://www.example.com/example#')}
     >>> str(Uri('http://www.example.com/example#sample').apply_prefix(g.prefixes))
     'ex:sample'
+    >>> try: os.remove('test.png')
+    ... except: pass
+    >>> g.draw('test.png')
+    >>> os.path.exists('test.png')
+    True
     '''
 
 doctest.testmod()
