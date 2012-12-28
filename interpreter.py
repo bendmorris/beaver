@@ -28,7 +28,7 @@ if not sys.stdin.isatty():
     args.eval = sys.stdin.read() + args.eval
 
 
-def main():
+def run():
     graph = Graph(verbose=args.verbose)
     for input_file in args.file:
         graph.parse(filename=input_file)
@@ -89,4 +89,4 @@ def main():
         graph.draw(args.draw)
     
     
-if __name__ == '__main__': main()
+if __name__ == '__main__': run()

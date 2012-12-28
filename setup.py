@@ -14,7 +14,7 @@ setup(name='beaver',
                 },
       entry_points={
         'console_scripts': [
-            'beaver = beaver.beaver:main',
+            'beaver = beaver.interpreter:run',
         ],
       },
       install_requires=[
