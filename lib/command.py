@@ -27,7 +27,10 @@ class DefCommand(Command):
         self.ident = ident
         self.pattern = pattern
         self.triples = triples
-    def __str__(self): return '%s%s = %s' % (self.ident, self.pattern, self.triples)
+    def __str__(self):
+        if hasattr(self.triples, '__iter__'): triples = '{ %s }' % ' '.join([str(s) for s in self.triples])
+        else: triples = str(self.triples)
+        return '%s%s = %s' % (self.ident, self.pattern, triples)
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         ident = self.ident
