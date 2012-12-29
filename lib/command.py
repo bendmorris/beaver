@@ -112,7 +112,7 @@ class ForCommand(Command):
         self.ident = ident
         self.sequence = sequence
         self.expression = expression
-    def __str__(self): return '@for %s in (%s) %s' % (self.ident, self.sequence, self.expression)
+    def __str__(self): return '@for %s in (%s) %s' % (self.ident, self.sequence, ''.join([str(x) for x in self.expression]))
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         for var in self.sequence.vars:

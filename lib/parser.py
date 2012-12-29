@@ -24,13 +24,14 @@ uri = full_uri | quri
 
 comment = pythonStyleComment.suppress()
 literalString = (sglQuotedString | dblQuotedString)
+literalString.setParseAction(lambda x: Value(''.join(x)))
 integer = Word(nums)
-integer.setParseAction(lambda x: int(''.join(x)))
+integer.setParseAction(lambda x: Value(int(''.join(x))))
 real = ( Combine(Word(nums) + Optional("." + Word(nums))
                  + oneOf("E e") + Optional( oneOf('+ -')) + Word(nums))
          | Combine(Word(nums) + "." + Word(nums))
          )
-real.setParseAction(lambda x: float(''.join(x)))
+real.setParseAction(lambda x: Value(float(''.join(x))))
 literalNumber = real | integer
 literal = literalString | literalNumber
 
