@@ -2,9 +2,11 @@ Data and code in Beaver are statements that map onto RDF graphs, and the
 syntax is a superset of the Turtle RDF serialization format.
 
 Beaver files contain series of semantic statements. These statements contain a
-subject, a predicate (describing a relationship), and an object. If a statement
-contains more than three parts, the additional parts represent additional 
-objects: subject, predict, object1, object2...
+subject, a predicate (describing a relationship), and an object. Each statement
+describes how its subject is related to its object; in other words, it 
+describes a property of the subject. If a statement contains more than three 
+parts, the additional parts represent additional objects: subject, predict, 
+object1, object2...
 
 Each part of a statement can be either a literal (e.g. `"abc"` or `1.0` or `3`) 
 or a  URI (represented in angled brackets: `<http://www.example.org/cat>`.) 
