@@ -20,6 +20,7 @@ class PrefixCommand(Command):
     def __str__(self): return '@prefix %s: %s' % (self.prefix, self.uri)
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
         graph.prefixes[self.prefix] = self.uri
         
         
@@ -35,6 +36,7 @@ class DefCommand(Command):
         return '%s%s = %s' % (self.ident, self.pattern, triples)
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
         ident = self.ident
         if not ident in graph.defs: graph.defs[ident] = []
         graph.defs[ident] = [(self.pattern, self.triples)] + graph.defs[ident]
@@ -47,6 +49,7 @@ class ImportCommand(Command):
     def __str__(self): return '@import %s' % self.uri
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
         try:
             stream = urllib2.urlopen(str(self.uri)[1:-1])
             graph.parse(stream=stream)
@@ -62,6 +65,7 @@ class LoadCommand(Command):
     def __str__(self): return '@load %s' % self.uri
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
         import RDF
         
         parser = RDF.Parser('rdfxml')
@@ -85,8 +89,22 @@ class DelCommand(Command):
     '''Remove triples from the graph.'''
     def __init__(self, triples):
         self.triples = triples
-    def __str__(self): return '@del %s' % triples
+    def __str__(self): return '@del %s' % self.triples
     def __repr__(self): return str(self)
+    def execute(self, graph, context={}, triples=None):
+        if triples is None: triples = self.triples
+        if not hasattr(triples, '__iter__'): triples = [triples]
+        
+        for stmt in triples:
+            replace = stmt.replace(context)
+            if replace: pass
+            
+            stmt = stmt.as_triple()
+            
+            graph.remove_stmt(stmt)
+            
+            if len(stmt.other_objs) > 0:
+                self.execute(graph, context, [Statement(stmt.subj, stmt.verb, o) for o in stmt.other_objs])
         
         
 class DrawCommand(Command):
@@ -96,6 +114,7 @@ class DrawCommand(Command):
     def __str__(self): return '@draw %s' % self.uri
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
         graph.draw(filename=str(self.uri)[1:-1])
         
         
@@ -104,6 +123,7 @@ class ReinitCommand(Command):
     def __str__(self): return '@reinit'
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
         graph.reinit()
         
         
@@ -115,6 +135,7 @@ class ForCommand(Command):
     def __str__(self): return '@for %s in (%s ) %s' % (self.ident, self.sequence, ''.join([str(x) for x in self.expression]))
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
         for var in self.sequence.vars:
             expr = [copy(x) for x in self.expression]
             iter_context = {self.ident: [(EmptyPattern, var)]}

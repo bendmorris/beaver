@@ -29,6 +29,8 @@ class Graph(object):
 
 
     def add_stmt(self, stmt):
+        if self.verbose: print str(stmt)
+        
         if stmt.subj == ';': 
             if self.last_subj:
                 subj = self.last_subj
@@ -44,7 +46,29 @@ class Graph(object):
         if not verb in self.statements[subj]: self.statements[subj][verb] = set()
         self.statements[subj][verb].add(stmt.obj)
         
-        if self.verbose: print str(stmt)
+        
+    def remove_stmt(self, stmt):
+        if self.verbose: print '@del %s' % str(stmt)
+        
+        if stmt.subj == ';': 
+            if self.last_subj:
+                subj = self.last_subj
+            else: raise BeaverException('Unspecified subject: %s' % stmt)
+        else: 
+            self.last_subj = subj = stmt.subj
+        
+        verb = stmt.verb
+        obj = stmt.obj
+        
+        if not subj in self.statements: return
+        if not verb in self.statements[subj]: return
+        
+        try: self.statements[subj][verb].remove(stmt.obj)
+        except KeyError: pass
+        
+        if len(self.statements[subj][verb]) == 0: del self.statements[subj][verb]
+        if len(self.statements[subj]) == 0: del self.statements[subj]
+        
         
     def execute(self, stmt, context={}):
         if isinstance(stmt, Statement):
@@ -68,7 +92,6 @@ class Graph(object):
                 context = updated_context(context, new_context)
                 return self.execute(new_stmt, context)
         
-            if self.verbose: print str(stmt)
             stmt.execute(self, context)
             
         elif hasattr(stmt, '__iter__'):
