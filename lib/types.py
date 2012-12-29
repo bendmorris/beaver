@@ -6,7 +6,7 @@ class Uri(object):
     def __init__(self, url):
         self.url = str(url)
     def __str__(self): return '<%s>' % self.url
-    def __repr__(self): return 'Uri(%s)' % repr(str(self.url))
+    def __repr__(self): return str(self)
     def __add__(self, x): return Uri(str(self) + str(x))
     def __eq__(self, x): return str(self) == str(x)
     def __hash__(self): return hash(str(self))
@@ -27,7 +27,7 @@ class QUri(Uri):
         self.prefix = str(prefix)
         self.url = str(url)
     def __str__(self): return '%s:%s' % (self.prefix, self.url)
-    def __repr__(self): return 'QUri(%s, %s)' % (repr(str(self.prefix)), repr(str(self.url)))
+    def __repr__(self): return str(self)
     def apply_prefixes(self, prefixes): pass
     
     
@@ -35,7 +35,7 @@ class Variable(object):
     def __init__(self, *ident):
         self.ident = ident
     def __str__(self): return '?%s' % self.ident
-    def __repr__(self): return 'Variable(%s)' % repr(self.ident)
+    def __repr__(self): return str(self)
     def __eq__(self, x): return str(self) == str(x)
     def __hash__(self): return hash(str(self))
         
@@ -44,6 +44,6 @@ class Pattern(object):
     def __init__(self, *vars):
         self.vars = vars
     def __str__(self): return (' ' if self.vars else '') + ' '.join([str(var) for var in self.vars])
-    def __repr__(self): return 'Pattern(%s)' % repr(self.vars)
+    def __repr__(self): return str(self)
     
 EmptyPattern = Pattern(*[])

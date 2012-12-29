@@ -6,7 +6,8 @@ import urllib2
 class Command(object):
     def execute(self, graph, context={}):
         raise BeaverException('This command (%s) has not yet been implemented.' % self.__doc__)
-    def __repr__(self): return '%s(**%s)' % (str(self.__class__.__name__).split('.')[-1], self.__dict__)
+    def __str__(self): return '%s(**%s)' % (str(self.__class__.__name__).split('.')[-1], self.__dict__)
+    def __repr__(self): return str(self)
         
         
 class PrefixCommand(Command):
@@ -15,6 +16,7 @@ class PrefixCommand(Command):
         self.prefix = prefix
         self.uri = uri
     def __str__(self): return '@prefix %s: %s' % (self.prefix, self.uri)
+    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         graph.prefixes[self.prefix] = self.uri
         
@@ -26,6 +28,7 @@ class DefCommand(Command):
         self.pattern = pattern
         self.triples = triples
     def __str__(self): return '%s%s = %s' % (self.ident, self.pattern, self.triples)
+    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         ident = self.ident
         if not ident in graph.defs: graph.defs[ident] = []
@@ -37,6 +40,7 @@ class ImportCommand(Command):
     def __init__(self, uri):
         self.uri = uri
     def __str__(self): return '@import %s' % self.uri
+    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         try:
             stream = urllib2.urlopen(str(self.uri)[1:-1])
@@ -51,6 +55,7 @@ class LoadCommand(Command):
     def __init__(self, uri):
         self.uri = uri
     def __str__(self): return '@load %s' % self.uri
+    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         import RDF
         
@@ -75,20 +80,23 @@ class DelCommand(Command):
     '''Remove triples from the graph.'''
     def __init__(self, triples):
         self.triples = triples
-    def __repr__(self): return '@del %s' % triples
+    def __str__(self): return '@del %s' % triples
+    def __repr__(self): return str(self)
         
         
 class DrawCommand(Command):
     '''Remove triples from the graph.'''
     def __init__(self, uri):
         self.uri = uri
-    def __repr__(self): return '@draw %s' % self.uri
+    def __str__(self): return '@draw %s' % self.uri
+    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         graph.draw(filename=str(self.uri)[1:-1])
         
         
 class ReinitCommand(Command):
     '''Remove triples from the graph.'''
-    def __repr__(self): return '@reinit'
+    def __str__(self): return '@reinit'
+    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         graph.reinit()
