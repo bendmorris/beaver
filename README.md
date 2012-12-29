@@ -15,7 +15,7 @@ Examples of Beaver commands:
     # load RDF/XML file
     @load <http://www.nexml.org/nexml/examples/trees.rdf>
 
-    # reinitialize everything
+    # wipe everything and start over with a new graph
     @reinit
     
     # define and call functions
