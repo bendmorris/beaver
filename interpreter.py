@@ -2,7 +2,6 @@ import argparse
 import sys
 from lib.graph import Graph
 from lib.types import BeaverException
-import readline
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -28,7 +27,12 @@ if not sys.stdin.isatty():
     args.eval = sys.stdin.read() + args.eval
 
 
+interactive = (not args.file and not args.eval) or args.interactive
+
+
 def run():
+    if interactive: print '''Beaver %s''' % __version__
+
     graph = Graph(verbose=args.verbose)
     for input_file in args.file:
         graph.parse(filename=input_file)
@@ -36,11 +40,10 @@ def run():
     if args.eval:
         graph.parse(text=args.eval)
     
-    if (not args.file and not args.eval) or args.interactive:
+    if interactive:
+        import readline
+
         exit = False
-
-        print '''Beaver %s''' % __version__
-
         while not exit:
             graph.verbose = args.verbose
         
