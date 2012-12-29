@@ -67,8 +67,7 @@ def graph_test():
     1
     >>> sorted([str(s) for s in g.statements.keys()])[:5]
     ['<http://example.org/e1>', '<http://example.org/e2>', '<http://example.org/e3>', '<http://example.org/e4>', '<http://example.org/e5>']
-    >>> g.parse(text='@reinit')
-    1
+    >>> g.reinit()
     >>> g.parse(text='@for ?x in (1 2 3 4 5) { <a> <b> ?x . }')
     1
     >>> g.statements[Uri('a')][Uri('b')]
@@ -79,6 +78,19 @@ def graph_test():
     1
     >>> g.statements[Uri('ben')][Uri('has_cat')]
     set(['whiskers', 'socks', 'oreo'])
+    >>> g.reinit()
+    >>> g.parse(text='?a ?b = { <thing> <not_a_one> ?b } . ?a 1 = { <thing> <is_a_one> 1 } .')
+    2
+    >>> g.parse(text='?a 1')
+    1
+    >>> g.parse(text='?a 2')
+    1
+    >>> g.parse(text='?a <bob>')
+    1
+    >>> g.statements[Uri('thing')][Uri('is_a_one')]
+    set([1])
+    >>> g.statements[Uri('thing')][Uri('not_a_one')]
+    set([2, <bob>])
     '''
 
 doctest.testmod()
