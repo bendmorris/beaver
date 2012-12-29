@@ -64,7 +64,6 @@ def updated_context(context, new_context):
     
     for (key, value) in new_context.items():
         if not key in context: context[key] = []
-        if not hasattr(value, '__iter__'): value = [value]
         context[key] = value + context[key]
         
-    return new_context
+    return context

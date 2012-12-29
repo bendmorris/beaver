@@ -33,7 +33,7 @@ def parser_test():
     >>> expression.parseString('@prefix ex: <http://www.example.com/example#>', parseAll=True)[0]
     @prefix ex: <http://www.example.com/example#>
     >>> expression.parseString('@for ?a in (1 2 3 4 5) { ?a <b> <c> . }', parseAll=True)[0]
-    @for ?a in ( 1 2 3 4 5) ?a <b> <c>
+    @for ?a in ( 1 2 3 4 5 ) ?a <b> <c>
     '''
 
 def graph_test():
@@ -73,6 +73,12 @@ def graph_test():
     1
     >>> g.statements[Uri('a')][Uri('b')]
     set([1, 2, 3, 4, 5])
+    >>> g.parse(text="?cat ?name = { ?name a example:cat . <ben> <has_cat> ?name . }")
+    1
+    >>> g.parse(text="@for ?name in ('whiskers' 'socks' 'oreo') ?cat ?name .")
+    1
+    >>> g.statements[Uri('ben')][Uri('has_cat')]
+    set(['whiskers', 'socks', 'oreo'])
     '''
 
 doctest.testmod()
