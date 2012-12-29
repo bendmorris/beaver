@@ -8,6 +8,7 @@ class Command(object):
         raise BeaverException('This command (%s) has not yet been implemented.' % self.__doc__)
     def __str__(self): return '%s(**%s)' % (str(self.__class__.__name__).split('.')[-1], self.__dict__)
     def __repr__(self): return str(self)
+    def replace(self, *varsets): pass
         
         
 class PrefixCommand(Command):
@@ -85,6 +86,7 @@ class DelCommand(Command):
         self.triples = triples
     def __str__(self): return '@del %s' % triples
     def __repr__(self): return str(self)
+    def replace(self, *varsets): pass
         
         
 class DrawCommand(Command):

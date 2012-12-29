@@ -60,7 +60,7 @@ class Graph(object):
     def execute(self, stmt, context={}):
         if isinstance(stmt, Statement):
             replace = stmt.replace(context, self.defs)
-            if replace: 
+            if replace:
                 new_stmt, new_context = replace
                 context = updated_context(context, new_context)
                 return self.execute(new_stmt, context)
@@ -73,6 +73,12 @@ class Graph(object):
                 self.execute([Statement(stmt.subj, stmt.verb, o) for o in stmt.other_objs], context)
             
         elif isinstance(stmt, Command):
+            replace = stmt.replace(context, self.defs)
+            if replace:
+                new_stmt, new_context = replace
+                context = updated_context(context, new_context)
+                return self.execute(new_stmt, context)
+        
             if self.verbose: print str(stmt)
             stmt.execute(self, context)
             
