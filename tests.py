@@ -58,6 +58,8 @@ def graph_test():
     1
     >>> g.parse(text='@import <test.bvr>')
     1
+    >>> g.parse(text='<a> a <b>, <c> .')
+    1
     >>> g.parse(text='@reinit')
     1
     >>> g.parse(text='@load <http://www.nexml.org/nexml/examples/trees.rdf>')

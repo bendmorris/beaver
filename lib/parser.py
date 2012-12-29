@@ -42,14 +42,11 @@ triplet.setParseAction(lambda x: x[0])
 pattern = OneOrMore(Optional('(').suppress() + OneOrMore(triplet) + Optional(')').suppress())
 pattern.setParseAction(lambda x: Pattern(*x))
 
-subj = triplet
-verb = wildcard | triplet | rdftype
-obj = wildcard | triplet
-triple = (subj + verb + obj + Optional(OneOrMore(Suppress(',') + obj)))
+triple = (triplet + triplet + triplet + Optional(OneOrMore(Suppress(',') + triplet)))
 triple.setParseAction(lambda x: Statement(*x))
-continued_triple = (';' + verb + obj + Optional(OneOrMore(Suppress(',') + obj)))
+continued_triple = (';' + triplet + triplet + Optional(OneOrMore(Suppress(',') + triplet)))
 continued_triple.setParseAction(lambda x: Statement(*x))
-generic_stmt = OneOrMore(triplet)
+generic_stmt = OneOrMore(Optional(Suppress(',')) + triplet)
 generic_stmt.setParseAction(lambda x: Statement(*x))
 statements = (
               (triple + OneOrMore(continued_triple)) | generic_stmt
