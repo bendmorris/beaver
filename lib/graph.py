@@ -1,14 +1,13 @@
 from types import BeaverException, Variable, Uri, updated_context
 from statement import Statement, TripleStatement
-from command import Command
+from command import Command, PrefixCommand
 from parser import parse_string, parse_file, parse_stream
 
 
 
-default = '''
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix bvr: <http://www.beaver-lang.org/1/0/0/syntax#> .
-'''
+default = [
+           PrefixCommand('rdf', Uri('http://www.w3.org/1999/02/22-rdf-syntax-ns#')),
+           ]
     
 
 class Graph(object):
@@ -25,7 +24,7 @@ class Graph(object):
         self.last_subj = None
         self.defs = {}
         
-        self.parse(text=default)
+        self.execute(default)
 
 
     def add_stmt(self, stmt):
