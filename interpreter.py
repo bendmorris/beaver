@@ -35,10 +35,16 @@ def run():
 
     graph = Graph(verbose=args.verbose)
     for input_file in args.file:
-        graph.parse(filename=input_file)
+        try:
+            graph.parse(filename=input_file)
+        except KeyboardInterrupt:
+            sys.exit()
         
     if args.eval:
-        graph.parse(text=args.eval)
+        try:
+            graph.parse(text=args.eval)
+        except KeyboardInterrupt:
+            sys.exit()
     
     if interactive:
         import readline
