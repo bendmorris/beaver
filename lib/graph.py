@@ -1,4 +1,5 @@
-from types import Statement, BeaverException, Variable, Uri
+from types import BeaverException, Variable, Uri
+from statement import Statement, TripleStatement
 from command import Command
 from parser import parse_string, parse_file, parse_stream
 
@@ -8,6 +9,17 @@ default = '''
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix bvr: <http://www.beaver-lang.org/1/0/0/syntax#> .
 '''
+
+def updated_context(context, new_context):
+    if not new_context: return context
+    context = context.copy()
+    
+    for (key, value) in new_context.items():
+        if not key in context: context[key] = []
+        context[key] = value + context[key]
+        
+    return new_context
+    
 
 class Graph(object):
     '''A collection of triples.'''
@@ -47,22 +59,14 @@ class Graph(object):
         
     def execute(self, stmt, context={}):
         if isinstance(stmt, Statement):
-            for part in ['subj', 'verb', 'obj']:
-                p = getattr(stmt, part)
-                if isinstance(p, Variable):
-                    id = str(p)
-                    matched = False
-                    for varset in (context, self.defs):
-                        if matched: break
-                        if id in context:
-                            for pattern, match in context[id]:
-                                if pattern.vars == []:
-                                    setattr(stmt, part, context[id])
-                                    matched = True
-                                    break
-
-                    if not matched: raise BeaverException('Undefined variable: %s' % id)
-                    
+            replace = stmt.replace(context, self.defs)
+            if replace: 
+                new_stmt, new_context = replace
+                context = updated_context(context, new_context)
+                return self.execute(new_stmt, context)
+            
+            stmt = stmt.as_triple()
+            
             self.add_stmt(stmt)
             
             if len(stmt.other_objs) > 0:

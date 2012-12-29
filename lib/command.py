@@ -1,4 +1,5 @@
-from types import BeaverException, Variable, Uri, Statement, Pattern
+from types import BeaverException, Variable, Uri, Pattern
+from statement import Statement
 import urllib2
 
 
@@ -6,6 +7,7 @@ class Command(object):
     def execute(self, graph, context={}):
         raise BeaverException('This command (%s) has not yet been implemented.' % self.__doc__)
     def __repr__(self): return '%s(**%s)' % (str(self.__class__.__name__).split('.')[-1], self.__dict__)
+        
         
 class PrefixCommand(Command):
     '''Define a URI prefix.'''
@@ -16,6 +18,7 @@ class PrefixCommand(Command):
     def execute(self, graph, context={}):
         graph.prefixes[self.prefix] = self.uri
         
+        
 class DefCommand(Command):
     '''Define a function pattern.'''
     def __init__(self, ident, pattern, *triples):
@@ -24,41 +27,10 @@ class DefCommand(Command):
         self.triples = triples
     def __str__(self): return '%s%s = %s' % (self.ident, self.pattern, self.triples)
     def execute(self, graph, context={}):
-        ident = str(self.ident)
+        ident = self.ident
         if not ident in graph.defs: graph.defs[ident] = []
         graph.defs[ident] = [(self.pattern, self.triples)] + graph.defs[ident]
         
-class CallCommand(Command):
-    '''Call a previously defined function.'''
-    def __init__(self, ident, pattern):
-        self.ident = ident
-        self.pattern = pattern
-    def __str__(self): return '%s%s' % (self.ident, self.pattern if self.pattern else '')
-    def execute(self, graph, context={}):
-        try: patterns = graph.defs[str(self.ident)]
-        except KeyError: raise BeaverException('Undefined variable: %s' % self.ident)
-        
-        match = False
-        for (pattern, stmts) in patterns:
-            if len(pattern.vars) != len(self.pattern.vars):
-                continue
-            else:
-                match = True
-                for given, to_match in zip(self.pattern.vars, pattern.vars):
-                    if not isinstance(to_match, Variable):
-                        match = given == to_match
-                    if not match: break
-                        
-                    
-            if match:
-                context = {}
-                for given, to_match in zip(self.pattern.vars, pattern.vars):
-                    if isinstance(to_match, Variable):
-                        context[to_match] = [(Pattern([]), given)]
-                graph.execute(stmts, context)
-                return
-                
-        raise BeaverException('No pattern matched: %s %s' % (self.ident, self.pattern))
         
 class ImportCommand(Command):
     '''Import and interpret a Beaver file.'''
@@ -96,7 +68,7 @@ class LoadCommand(Command):
                 elif isinstance(item, RDF.Node): new_item = Uri(str(item))
                 contents.append(new_item)
             stmt = Statement(*contents)
-            graph.add_stmt(stmt)
+            graph.add_stmt(stmt.as_triple())
             
             
 class DelCommand(Command):

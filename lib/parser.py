@@ -2,6 +2,7 @@ from cStringIO import StringIO
 from pyparsing import *
 ParserElement.enablePackrat()
 from types import *
+from statement import Statement
 from command import *
 
 
@@ -35,21 +36,24 @@ literal = literalString | literalNumber
 
 variable = (Suppress('?') + Optional(ident, default=''))
 variable.setParseAction(lambda x: Variable(*x))
-triplet = (variable | uri | literal)
+triplet = (variable | uri | literal | rdftype)
 triplet.setParseAction(lambda x: x[0])
-pattern = OneOrMore(triplet)
+# TODO: optional parentheses
+pattern = OneOrMore(Optional('(').suppress() + OneOrMore(triplet) + Optional(')').suppress())
 pattern.setParseAction(lambda x: Pattern(*x))
 
 subj = triplet
 verb = wildcard | triplet | rdftype
 obj = wildcard | triplet
 triple = (subj + verb + obj + Optional(OneOrMore(Suppress(',') + obj)))
-triple.setParseAction(lambda x: Stmt(*x))
+triple.setParseAction(lambda x: Statement(*x))
 continued_triple = (';' + verb + obj + Optional(OneOrMore(Suppress(',') + obj)))
-continued_triple.setParseAction(lambda x: Stmt(*x))
-triples = (
-           (triple + OneOrMore(continued_triple)) | triple 
-           )
+continued_triple.setParseAction(lambda x: Statement(*x))
+generic_stmt = OneOrMore(triplet)
+generic_stmt.setParseAction(lambda x: Statement(*x))
+statements = (
+              (triple + OneOrMore(continued_triple)) | generic_stmt
+              )
             
 # commands
 prefix_cmd = (Suppress('@prefix') + ident + Suppress(":") + uri).setParseAction(lambda x: PrefixCommand(*x))
@@ -60,11 +64,9 @@ draw_cmd = (Suppress('@draw') + uri).setParseAction(lambda x: DrawCommand(*x))
 reinit_cmd = (Suppress('@reinit')).setParseAction(lambda x: ReinitCommand())
 function_def = (variable + pattern + Suppress('=') + expression)
 function_def.setParseAction(lambda x: DefCommand(*x))
-var_def = (variable + Suppress('=') + (expression | triplet))
-var_def.setParseAction(lambda x: DefCommand(x[0], Pattern([]), *x[1:]))
+var_def = (variable + Suppress('=') + expression)
+var_def.setParseAction(lambda x: DefCommand(x[0], EmptyPattern, *x[1:]))
 definition_cmd = (function_def | var_def)
-call_cmd = (variable + Optional(pattern, default=Pattern([])))
-call_cmd.setParseAction(lambda x: CallCommand(*x))
 command = (
            prefix_cmd | 
            load_cmd | 
@@ -75,7 +77,7 @@ command = (
            ) + Optional(".").suppress()
            
 expression << ((Suppress('{') + OneOrMore(expression) + Suppress('}')) |
-               ((comment | definition_cmd | call_cmd | triples | command))
+               ((comment | definition_cmd | statements | command))
                 ) + Optional('.').suppress()
 
 

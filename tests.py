@@ -29,7 +29,7 @@ def parser_test():
     >>> expression.parseString('@load <test.xml>', parseAll=True)[0]
     LoadCommand(**{'uri': Uri('test.xml')})
     >>> expression.parseString('?a = 1 2 3 .', parseAll=True)[0]
-    DefCommand(**{'pattern': Pattern(([],)), 'ident': Variable(('a',)), 'triples': (Statement(1, 2, 3, ()),)})
+    DefCommand(**{'pattern': Pattern(()), 'ident': Variable(('a',)), 'triples': (Statement(1, 2, 3),)})
     >>> expression.parseString('@prefix ex: <http://www.example.com/example#>', parseAll=True)[0]
     PrefixCommand(**{'prefix': 'ex', 'uri': Uri('http://www.example.com/example#')})
     >>> expression.parseString('@for @a in 1 2 3 4 5 { @a <b> <c> . }')

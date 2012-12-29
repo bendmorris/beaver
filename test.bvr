@@ -14,7 +14,7 @@
     cdao:has_annotation <edge_annotation10> ;
     a cdao:Directed_Edge .
 
-?a ?x1 ?x2 =  
+?f ?x1 ?x2 =  
     1 ?x1 ?x2 ;
       3 <http://www.bob.com> .
 
