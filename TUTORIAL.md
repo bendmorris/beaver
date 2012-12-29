@@ -61,8 +61,8 @@ with pattern matching.
     ?cat <whiskers> .
     ?cat <socks> .
 
-Here, the `?cat` function is defined and then called with `?name` = <whiskers> 
-and `?name` = `<socks>`.
+Here, the `?cat` function is defined and then called with `?name = <whiskers>` 
+and `?name = <socks>`.
 
 For loops can be used to iterate over a sequence:
 
