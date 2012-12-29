@@ -1,6 +1,7 @@
-from types import BeaverException, Variable, Uri, Pattern
+from types import BeaverException, Variable, Uri, Pattern, EmptyPattern, updated_context
 from statement import Statement
 import urllib2
+import copy
 
 
 class Command(object):
@@ -86,7 +87,6 @@ class DelCommand(Command):
         self.triples = triples
     def __str__(self): return '@del %s' % triples
     def __repr__(self): return str(self)
-    def replace(self, *varsets): pass
         
         
 class DrawCommand(Command):
@@ -105,3 +105,18 @@ class ReinitCommand(Command):
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         graph.reinit()
+        
+        
+class ForCommand(Command):
+    def __init__(self, ident, sequence, *expression):
+        self.ident = ident
+        self.sequence = sequence
+        self.expression = expression
+    def __str__(self): return '@for %s in (%s) %s' % (self.ident, self.sequence, self.expression)
+    def __repr__(self): return str(self)
+    def execute(self, graph, context={}):
+        for var in self.sequence.vars:
+            expr = [copy.copy(x) for x in self.expression]
+            iter_context = {self.ident: [(EmptyPattern, var)]}
+            new_context = updated_context(context, iter_context)
+            graph.execute(expr, new_context)

@@ -1,4 +1,4 @@
-from types import BeaverException, Variable, Uri
+from types import BeaverException, Variable, Uri, updated_context
 from statement import Statement, TripleStatement
 from command import Command
 from parser import parse_string, parse_file, parse_stream
@@ -9,16 +9,6 @@ default = '''
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix bvr: <http://www.beaver-lang.org/1/0/0/syntax#> .
 '''
-
-def updated_context(context, new_context):
-    if not new_context: return context
-    context = context.copy()
-    
-    for (key, value) in new_context.items():
-        if not key in context: context[key] = []
-        context[key] = value + context[key]
-        
-    return new_context
     
 
 class Graph(object):
@@ -33,10 +23,9 @@ class Graph(object):
         self.statements = {}
         self.prefixes = {}
         self.last_subj = None
+        self.defs = {}
         
         self.parse(text=default)
-        
-        self.defs = {}
 
 
     def add_stmt(self, stmt):

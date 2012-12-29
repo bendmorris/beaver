@@ -34,7 +34,7 @@ class QUri(Uri):
 class Variable(object):
     def __init__(self, *ident):
         self.ident = ident
-    def __str__(self): return '?%s' % self.ident
+    def __str__(self): return '?%s' % (self.ident)
     def __repr__(self): return str(self)
     def __eq__(self, x): return str(self) == str(x)
     def __hash__(self): return hash(str(self))
@@ -47,3 +47,15 @@ class Pattern(object):
     def __repr__(self): return str(self)
     
 EmptyPattern = Pattern(*[])
+
+
+def updated_context(context, new_context):
+    if not new_context: return context
+    context = context.copy()
+    
+    for (key, value) in new_context.items():
+        if not key in context: context[key] = []
+        if not hasattr(value, '__iter__'): value = [value]
+        context[key] = value + context[key]
+        
+    return new_context

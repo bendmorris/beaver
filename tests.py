@@ -32,7 +32,8 @@ def parser_test():
     ?a = { 1 2 3 }
     >>> expression.parseString('@prefix ex: <http://www.example.com/example#>', parseAll=True)[0]
     @prefix ex: <http://www.example.com/example#>
-    >>> expression.parseString('@for @a in 1 2 3 4 5 { @a <b> <c> . }')
+    >>> expression.parseString('@for ?a in (1 2 3 4 5) { ?a <b> <c> . }', parseAll=True)[0]
+    @for ?a in ( 1 2 3 4 5) ?a <b> <c>
     '''
 
 def graph_test():

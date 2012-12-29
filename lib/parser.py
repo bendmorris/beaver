@@ -39,7 +39,7 @@ variable.setParseAction(lambda x: Variable(*x))
 triplet = (variable | uri | literal | rdftype)
 triplet.setParseAction(lambda x: x[0])
 # TODO: optional parentheses
-pattern = OneOrMore(Optional('(').suppress() + OneOrMore(triplet) + Optional(')').suppress())
+pattern = OneOrMore(triplet)
 pattern.setParseAction(lambda x: Pattern(*x))
 
 triple = (triplet + triplet + triplet + Optional(OneOrMore(Suppress(',') + triplet)))
@@ -53,18 +53,27 @@ statements = (
               )
             
 # commands
-prefix_cmd = (Suppress('@prefix') + ident + Suppress(":") + uri).setParseAction(lambda x: PrefixCommand(*x))
-load_cmd = (Suppress('@load') + uri).setParseAction(lambda x: LoadCommand(*x))
-import_cmd = (Suppress('@import') + uri).setParseAction(lambda x: ImportCommand(*x))
-del_cmd = (Suppress('@del') + expression).setParseAction(lambda x: DelCommand(*x))
-draw_cmd = (Suppress('@draw') + uri).setParseAction(lambda x: DrawCommand(*x))
-reinit_cmd = (Suppress('@reinit')).setParseAction(lambda x: ReinitCommand())
+for_cmd = (Suppress('@for') + variable + Suppress('in') + Suppress('(') + pattern + Suppress(')') + expression)
+for_cmd.setParseAction(lambda x: ForCommand(*x))
+prefix_cmd = (Suppress('@prefix') + ident + Suppress(":") + uri)
+prefix_cmd.setParseAction(lambda x: PrefixCommand(*x))
+load_cmd = (Suppress('@load') + uri)
+load_cmd.setParseAction(lambda x: LoadCommand(*x))
+import_cmd = (Suppress('@import') + uri)
+import_cmd.setParseAction(lambda x: ImportCommand(*x))
+del_cmd = (Suppress('@del') + expression)
+del_cmd.setParseAction(lambda x: DelCommand(*x))
+draw_cmd = (Suppress('@draw') + uri)
+draw_cmd.setParseAction(lambda x: DrawCommand(*x))
+reinit_cmd = (Suppress('@reinit'))
+reinit_cmd.setParseAction(lambda x: ReinitCommand())
 function_def = (variable + pattern + Suppress('=') + expression)
 function_def.setParseAction(lambda x: DefCommand(*x))
 var_def = (variable + Suppress('=') + expression)
 var_def.setParseAction(lambda x: DefCommand(x[0], EmptyPattern, *x[1:]))
 definition_cmd = (function_def | var_def)
 command = (
+           for_cmd |
            prefix_cmd | 
            load_cmd | 
            import_cmd | 
