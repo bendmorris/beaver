@@ -95,13 +95,13 @@ def graph_tests():
     >>> g.reinit()
     >>> g.parse(text='?a ?b = { <things> <not_a_one> ?b } . ?a 1 = { <things> <is_a_one> 1 } .')
     2
-    >>> g.parse(text='@for ?x in (1 2 <bob>) ?a ?x .')
+    >>> g.parse(text='@for ?x in (1 2 <bob> "1") ?a ?x .')
     1
     >>> g.statements[Uri('things')][Uri('is_a_one')]
     set([1])
     >>> g.statements[Uri('things')][Uri('not_a_one')]
-    set([2, <bob>])
-    >>> g.parse(text='@for ?x in (2 <bob>) @del <things> <not_a_one> ?x . @del <things> <is_a_one> 1 .')
+    set(["1", 2, <bob>])
+    >>> g.parse(text='@for ?x in (2 <bob> "1") @del <things> <not_a_one> ?x . @del <things> <is_a_one> 1 .')
     2
     >>> g.statements
     {}
