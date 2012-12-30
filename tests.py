@@ -4,6 +4,12 @@ from lib.command import *
 from lib.parser import *
 import os
 import doctest
+import sys
+
+
+if len(sys.argv) > 1:
+    verbose = eval(sys.argv[1])
+else: verbose=False
 
 
 def parser_tests():
@@ -102,4 +108,4 @@ def graph_tests():
     '''
 
 
-doctest.testmod()
+doctest.testmod(verbose=verbose)
