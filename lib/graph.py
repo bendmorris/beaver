@@ -212,7 +212,7 @@ class Graph(object):
             graph.write(filename, format=img_format)
             
             
-    def write(self, filename):
+    def write(self, filename=None):
         if filename is None:
             handle = sys.stdout
         else:
