@@ -12,7 +12,7 @@ describes a property of the subject. For example, the statement:
 This is represented graphically by an arrow, "color", pointing from "whiskers"
 to "black":
 
-![beaver graph](http://i.imgur.com/fVNXI.jpg)    
+![beaver graph](http://i.imgur.com/1qcS3.jpg)
 
 If a statement contains more than three parts, the additional parts represent 
 additional objects: subject, predicate, object1, object2...
