@@ -55,6 +55,7 @@ class Pattern(object):
         self.vars = vars
     def __str__(self): return (' ' if self.vars else '') + ' '.join([str(var) for var in self.vars])
     def __repr__(self): return str(self)
+    def __eq__(self, x): return self.vars == x.vars
     
 EmptyPattern = Pattern(*[])
 

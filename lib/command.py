@@ -96,7 +96,7 @@ class DelCommand(Command):
         if not hasattr(triples, '__iter__'): triples = [triples]
         
         for stmt in triples:
-            replace = stmt.replace(context)
+            replace = stmt.replace(context, graph.defs)
             if replace: pass
             
             stmt = stmt.as_triple()
