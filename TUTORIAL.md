@@ -47,6 +47,8 @@ commas. For example:
 All of these statements relate to the subject, `<whiskers>`. Whiskers is a cat,
 is 4 years old, is female, and has two nicknames, "Fluffy" and "Kitty".
 
+![beaver graph](http://imgur.com/eLkIz.jpg)
+
 Blocks of statements are delineated by curly brackets:
 
     {
