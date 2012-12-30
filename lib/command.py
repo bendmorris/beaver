@@ -118,6 +118,17 @@ class DrawCommand(Command):
         graph.draw(filename=str(self.uri)[1:-1])
         
         
+class OutCommand(Command):
+    '''Write triples to output file.'''
+    def __init__(self, uri=None):
+        self.uri = uri
+    def __str__(self): return '@write %s' % self.uri
+    def __repr__(self): return str(self)
+    def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
+        graph.write(filename=None if self.uri is None else str(self.uri)[1:-1])
+        
+        
 class ReinitCommand(Command):
     '''Remove triples from the graph.'''
     def __str__(self): return '@reinit'

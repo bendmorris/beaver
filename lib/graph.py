@@ -2,7 +2,8 @@ from types import BeaverException, Variable, Uri, updated_context
 from statement import Statement, TripleStatement
 from command import Command, PrefixCommand
 from parser import parse_string, parse_file, parse_stream
-
+import sys
+import urllib2
 
 
 default = [
@@ -101,6 +102,7 @@ class Graph(object):
         else:
             raise BeaverException('Unrecognized statement: %s' % stmt)
         
+        
     def uri(self, uri):
         if hasattr(uri, 'prefix'):
             try:
@@ -109,6 +111,7 @@ class Graph(object):
                 raise BeaverException('Prefix %s is not defined.' % uri.prefix)
         else: base = ''
         return Uri(base + uri.url)
+        
         
     def parse(self, filename=None, text=None, stream=None):
         if filename:
@@ -126,6 +129,7 @@ class Graph(object):
             self.execute(stmt)
         
         return stmts
+        
         
     def draw(self, filename, use='pydot'):
         if use=='pygraphviz':
@@ -206,3 +210,35 @@ class Graph(object):
                         
             img_format = filename.split('.')[-1]
             graph.write(filename, format=img_format)
+            
+            
+    def write(self, filename):
+        if filename is None:
+            handle = sys.stdout
+        else:
+            try:
+                handle = urllib2.urlopen(filename, 'w')
+            except ValueError:
+                handle = open(filename, 'w')
+                
+        if self.prefixes:
+            handle.write('\n'.join(['@prefix %s: %s' % (key, value) for key, value in self.prefixes.items()]))
+            handle.write('\n\n')
+        
+        newline = False
+        for subj in self.statements:
+            if newline: handle.write('\n')
+            else: newline = True
+
+            semicolon = False
+            for verb in self.statements[subj]:
+                if semicolon: s = ' ;\n    '
+                else: s = subj.apply_prefix(self.prefixes); semicolon = True
+                
+                v = verb.apply_prefix(self.prefixes)
+                if v == 'rdf:type': v = 'a'
+                
+                objs = self.statements[subj][verb]
+                o = ', '.join([str(obj.apply_prefix(self.prefixes)) for obj in objs])
+                handle.write('%s %s %s' % (s, v, o))
+            handle.write(' .\n')

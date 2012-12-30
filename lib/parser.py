@@ -66,6 +66,8 @@ del_cmd = (Suppress('@del') + expression)
 del_cmd.setParseAction(lambda x: DelCommand(*x))
 draw_cmd = (Suppress('@draw') + uri)
 draw_cmd.setParseAction(lambda x: DrawCommand(*x))
+write_cmd = (Suppress('@out') + Optional(uri))
+write_cmd.setParseAction(lambda x: OutCommand(*x))
 reinit_cmd = (Suppress('@reinit'))
 reinit_cmd.setParseAction(lambda x: ReinitCommand())
 function_def = (variable + pattern + Suppress('=') + expression)
@@ -80,6 +82,7 @@ command = (
            import_cmd | 
            del_cmd |
            draw_cmd |
+           write_cmd |
            reinit_cmd
            ) + Optional(".").suppress()
            
