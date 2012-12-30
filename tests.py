@@ -6,20 +6,22 @@ import os
 import doctest
 
 
-def parser_test():
+def parser_tests():
     '''
-    >>> str(variable.parseString('?a', parseAll=True)[0])
-    '?a'
+    >>> variable.parseString('?a', parseAll=True)[0]
+    ?a
     >>> literal.parseString('1.0', parseAll=True)[0]
     1.0
     >>> literal.parseString('1', parseAll=True)[0]
     1
-    >>> str(expression.parseString('1 2 3 .', parseAll=True)[0])
-    '1 2 3'
-    >>> str(expression.parseString('?a <http://www.example.com> abc:def .', parseAll=True)[0])
-    '?a <http://www.example.com> abc:def'
-    >>> [str(s) for s in (expression.parseString('<a> a <b> ; <c> <d>, <e> .', parseAll=True))]
-    ['<a> rdf:type <b>', '; <c> <d>, <e>']
+    >>> literal.parseString('"abc"', parseAll=True)[0]
+    "abc"
+    >>> expression.parseString('1 2 3 .', parseAll=True)[0]
+    1 2 3
+    >>> expression.parseString('?a <http://www.example.com> abc:def .', parseAll=True)[0]
+    ?a <http://www.example.com> abc:def
+    >>> [s for s in expression.parseString('<a> a <b> ; <c> <d>, <e> .', parseAll=True)]
+    [<a> rdf:type <b>, ; <c> <d>, <e>]
     >>> expression.parseString('@reinit', parseAll=True)[0]
     @reinit
     >>> expression.parseString('@draw <test.png>', parseAll=True)[0]
@@ -32,11 +34,18 @@ def parser_test():
     ?a = { 1 2 3 }
     >>> expression.parseString('@prefix ex: <http://www.example.com/example#>', parseAll=True)[0]
     @prefix ex: <http://www.example.com/example#>
-    >>> expression.parseString('@for ?a in (1 2 3 4 5) { ?a <b> <c> . }', parseAll=True)[0]
-    @for ?a in ( 1 2 3 4 5 ) ?a <b> <c>
+    >>> expression.parseString('@for ?a in (1 <a> ?x b:c "five") { ?a <b> <c> . }', parseAll=True)[0]
+    @for ?a in ( 1 <a> ?x b:c "five" ) ?a <b> <c>
+    >>> expression.parseString('@out', parseAll=True)[0]
+    @out
+    >>> expression.parseString('@out <test.ttl>', parseAll=True)[0]
+    @out <test.ttl>
+    >>> expression.parseString('@reinit', parseAll=True)[0]
+    @reinit
     '''
 
-def graph_test():
+
+def graph_tests():
     '''
     >>> g = Graph()
     >>> g.execute(Statement(Uri('node1'), QUri('p','node2'), Uri('node3'), Uri('node4')))
@@ -61,8 +70,7 @@ def graph_test():
     1
     >>> g.parse(text='<a> a <b>, <c> .')
     1
-    >>> g.parse(text='@reinit')
-    1
+    >>> g.reinit()
     >>> g.parse(text='@load <http://www.nexml.org/nexml/examples/trees.rdf>')
     1
     >>> sorted([str(s) for s in g.statements.keys()])[:5]
@@ -83,14 +91,13 @@ def graph_test():
     2
     >>> g.parse(text='?a 1')
     1
-    >>> g.parse(text='?a 2')
-    1
-    >>> g.parse(text='?a <bob>')
+    >>> g.parse(text='@for ?x in (2 <bob>) ?a ?x .')
     1
     >>> g.statements[Uri('thing')][Uri('is_a_one')]
     set([1])
     >>> g.statements[Uri('thing')][Uri('not_a_one')]
     set([2, <bob>])
     '''
+
 
 doctest.testmod()
