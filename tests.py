@@ -45,7 +45,7 @@ def graph_test():
     >>> prefix = PrefixCommand(prefix='ex', uri=Uri('http://www.example.com/example#'))
     >>> g.execute(prefix)
     >>> g.prefixes
-    {'bvr': <http://www.beaver-lang.org/1/0/0/syntax#>, 'rdf': <http://www.w3.org/1999/02/22-rdf-syntax-ns#>, 'ex': <http://www.example.com/example#>}
+    {'rdf': <http://www.w3.org/1999/02/22-rdf-syntax-ns#>, 'ex': <http://www.example.com/example#>}
     >>> str(Uri('http://www.example.com/example#sample').apply_prefix(g.prefixes))
     'ex:sample'
     >>> try: os.remove('test.png')
