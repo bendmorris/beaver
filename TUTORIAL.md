@@ -9,6 +9,10 @@ describes a property of the subject. For example, the statement:
     <whiskers> <color> <black> .
 
 ...says that the subject, `<whiskers>`, has a `<color>`, which is `<black>`.
+This is represented graphically by an arrow, "color", pointing from "whiskers"
+to "black":
+
+![beaver graph](http://i.imgur.com/fVNXI.jpg)    
 
 If a statement contains more than three parts, the additional parts represent 
 additional objects: subject, predicate, object1, object2...
