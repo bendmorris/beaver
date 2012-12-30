@@ -36,6 +36,12 @@ Examples of Beaver commands:
     # remove triples from the graph
     @del <node1> <part_of_edge> <edge1> .
 
+    # print the current graph to screen
+    @out
+
+    # save the current graph as Turtle
+    @out <output.ttl>
+
 
 Using the interpreter, you can save images of the resulting graphs (requires pydot or pygraphviz.) For example:
 
