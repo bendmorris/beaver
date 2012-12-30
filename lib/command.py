@@ -122,7 +122,7 @@ class OutCommand(Command):
     '''Write triples to output file.'''
     def __init__(self, uri=None):
         self.uri = uri
-    def __str__(self): return '@write%s' % ('' if self.uri is None else ' %s' % self.uri)
+    def __str__(self): return '@out%s' % ('' if self.uri is None else ' %s' % self.uri)
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
