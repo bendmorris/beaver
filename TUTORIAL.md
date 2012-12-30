@@ -35,14 +35,17 @@ object:
 
 `<whiskers>` is now an object of type `<http://www.example.org/cat>`.
 
-Consecutive statements referring to the same subject can use a semicolon, e.g.:
+Consecutive statements referring to the same subject can use a semicolon;
+statements with the same subject and verb, but different objects, can use 
+commas. For example:
 
     <whiskers> a example:cat ;
               <age> 4 ;
-              <sex> "female" .
+              <sex> "female" ;
+              <nickname> "Fluffy", "Kitty" .
 
 All of these statements relate to the subject, `<whiskers>`. Whiskers is a cat,
-is 4 years old, and is female.
+is 4 years old, is female, and has two nicknames, "Fluffy" and "Kitty".
 
 Blocks of statements are delineated by curly brackets:
 
