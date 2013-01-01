@@ -24,6 +24,7 @@ if args.version:
 
 if args.test:
     import tests
+    tests.run_tests(verbose=args.verbose)
     sys.exit()
 
 if not sys.stdin.isatty():

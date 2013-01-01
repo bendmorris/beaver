@@ -2,14 +2,11 @@ from lib.types import *
 from lib.graph import *
 from lib.command import *
 from lib.parser import *
+import inspect
 import os
 import doctest
 import sys
 
-
-if len(sys.argv) > 1 and __name__=='__main__':
-    verbose = eval(sys.argv[1])
-else: verbose=False
 
 
 def parser_tests():
@@ -108,4 +105,13 @@ def graph_tests():
     '''
 
 
-doctest.testmod(verbose=verbose)
+def run_tests(verbose=False):
+    doctest.testmod(inspect.getmodule(parser_tests), verbose=verbose)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        verbose = eval(sys.argv[1])
+    else: verbose=False
+
+    run_tests(verbose=verbose)
