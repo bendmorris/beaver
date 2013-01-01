@@ -7,7 +7,7 @@ import doctest
 import sys
 
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 1 and __name__=='__main__':
     verbose = eval(sys.argv[1])
 else: verbose=False
 

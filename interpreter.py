@@ -15,10 +15,15 @@ arg_parser.add_argument('-i', '--interactive', help='enter interactive mode afte
 arg_parser.add_argument('-e', '--eval', help='string to be evaluated')
 arg_parser.add_argument('-v', '--verbose', help='print each triple statement as evaluated', action='store_true')
 arg_parser.add_argument('--version', help='print version and exit', action='store_true')
+arg_parser.add_argument('--test', help='run unit tests and exit', action='store_true')
 args = arg_parser.parse_args()
 
 if args.version:
     print __version__
+    sys.exit()
+
+if args.test:
+    import tests
     sys.exit()
 
 if not sys.stdin.isatty():
