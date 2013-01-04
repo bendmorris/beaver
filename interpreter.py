@@ -17,7 +17,7 @@ arg_parser.add_argument('-e', '--eval', help='string to be evaluated')
 arg_parser.add_argument('-v', '--verbose', help='print each triple statement as evaluated', action='store_true')
 arg_parser.add_argument('--version', help='print version and exit', action='version', version=__version__)
 arg_parser.add_argument('--test', help='run unit tests and exit', action='store_true')
-arg_parser.add_argument('-d', '--draw', help='output an image of the resulting graph to the given image file')
+arg_parser.add_argument('-d', '--draw', help='output an image of the resulting graph to the given image file; image type is inferred from file extension')
 arg_parser.add_argument('-o', '--out', help='serialize the resulting graph to the given output file (using Turtle)', nargs='?', const=True, default=None)
 args = arg_parser.parse_args()
 #print args.__dict__
