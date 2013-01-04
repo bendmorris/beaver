@@ -46,12 +46,20 @@ def run():
         try:
             graph.parse(filename=input_file)
         except KeyboardInterrupt:
+            print "KeyboardInterrupt"
+            sys.exit()
+        except Exception as e:
+            print e
             sys.exit()
         
     if args.eval:
         try:
             graph.parse(text=args.eval)
         except KeyboardInterrupt:
+            print "KeyboardInterrupt"
+            sys.exit()
+        except Exception as e:
+            print e
             sys.exit()
     
     if interactive:

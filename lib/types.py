@@ -1,5 +1,6 @@
 class BeaverException(Exception):
-    pass
+    def __init__(self, s):
+        Exception.__init__(self, 'ERROR: %s' % s)
             
 
 class Uri(object):
