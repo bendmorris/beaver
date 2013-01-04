@@ -1,7 +1,9 @@
 import argparse
+import os
 import sys
 from lib.graph import Graph
-from lib.types import BeaverException
+from lib.types import BeaverException, Uri
+from lib.command import OutCommand
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -10,17 +12,15 @@ from __init__ import __version__
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('file', nargs='*', help='file to be interpreted')
-arg_parser.add_argument('-d', '--draw', help='output an image of the resulting graph to the given image file')
 arg_parser.add_argument('-i', '--interactive', help='enter interactive mode after interpreting file', action='store_true')
 arg_parser.add_argument('-e', '--eval', help='string to be evaluated')
 arg_parser.add_argument('-v', '--verbose', help='print each triple statement as evaluated', action='store_true')
-arg_parser.add_argument('--version', help='print version and exit', action='store_true')
+arg_parser.add_argument('--version', help='print version and exit', action='version', version=__version__)
 arg_parser.add_argument('--test', help='run unit tests and exit', action='store_true')
+arg_parser.add_argument('-d', '--draw', help='output an image of the resulting graph to the given image file')
+arg_parser.add_argument('-o', '--out', help='serialize the resulting graph to the given output file (using Turtle)', nargs='?', const=True, default=None)
 args = arg_parser.parse_args()
 
-if args.version:
-    print __version__
-    sys.exit()
 
 if args.test:
     import tests
@@ -100,6 +100,17 @@ def run():
                 continue
             
         
+    if args.out:
+        if args.out is True:
+            filename = None
+        else:
+            filename = args.out
+            if not filename.startswith('<') and filename.endswith('>'):
+                filename = '<%s>' % os.path.abspath(filename)
+                
+        graph.execute(OutCommand(Uri(filename)))
+
+
     if args.draw:
         graph.draw(args.draw)
     
