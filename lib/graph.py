@@ -1,4 +1,4 @@
-from types import BeaverException, Variable, Uri, updated_context
+from types import BeaverException, Variable, Uri, Value, updated_context
 from statement import Statement, TripleStatement
 from command import Command, PrefixCommand
 from parser import parse_string, parse_file, parse_stream
@@ -37,6 +37,8 @@ class Graph(object):
             else: raise BeaverException('Unspecified subject: %s' % stmt)
         else: 
             self.last_subj = subj = stmt.subj
+
+        if isinstance(subj, Value): raise BeaverException('Literals are not allowed as RDF subjects.')
         
         verb = stmt.verb
         obj = stmt.obj
