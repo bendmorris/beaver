@@ -20,6 +20,7 @@ arg_parser.add_argument('--test', help='run unit tests and exit', action='store_
 arg_parser.add_argument('-d', '--draw', help='output an image of the resulting graph to the given image file')
 arg_parser.add_argument('-o', '--out', help='serialize the resulting graph to the given output file (using Turtle)', nargs='?', const=True, default=None)
 args = arg_parser.parse_args()
+#print args.__dict__
 
 
 if args.test:
@@ -107,8 +108,9 @@ def run():
             filename = args.out
             if not filename.startswith('<') and filename.endswith('>'):
                 filename = '<%s>' % os.path.abspath(filename)
+            filename = Uri(filename)
                 
-        graph.execute(OutCommand(Uri(filename)))
+        graph.execute(OutCommand(filename))
 
 
     if args.draw:
