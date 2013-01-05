@@ -84,8 +84,8 @@ Pattern matching means you can declare multiple versions of a function with the
 same name but different sets of input. The inputs don't have to be variables.
 For example:
 
-    ?is_it_a_one ?b = { ?b <is_a_one> "no" }
-    ?is_it_a_one 1 = { 1 <is_a_one> "yes" }
+    ?is_it_a_one ?b = { <things> <not_a_one> ?b }
+    ?is_it_a_one 1 = { <things> <is_a_one> 1 }
 
 The second definition will only match `?is_it_a_one 1`, while the first 
 definition will match `?is_it_a_one` followed by any single input. More recent 
@@ -94,4 +94,4 @@ check each definition (in reverse order) until it finds a match.
 
 For loops can be used to iterate over a sequence:
 
-    @for ?name in ('whiskers' 'socks' 'oreo') ?cat ?name .
+    @for ?name in (<whiskers> <socks> <oreo>) ?cat ?name .
