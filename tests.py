@@ -37,8 +37,8 @@ def parser_tests():
     ?a = { 1 2 3 }
     >>> expression.parseString('@prefix ex: <http://www.example.com/example#>', parseAll=True)[0]
     @prefix ex: <http://www.example.com/example#>
-    >>> expression.parseString('@for ?a in (1 <a> ?x b:c "five") { ?a <b> <c> . }', parseAll=True)[0]
-    @for ?a in ( 1 <a> ?x b:c "five" ) ?a <b> <c>
+    >>> expression.parseString('@for ?obj in (1 <a> ?x b:c "five") { <a> <b> ?obj . }', parseAll=True)[0]
+    @for ?obj in ( 1 <a> ?x b:c "five" ) <a> <b> ?obj
     >>> expression.parseString('@out', parseAll=True)[0]
     @out
     >>> expression.parseString('@out <test.ttl>', parseAll=True)[0]
@@ -74,10 +74,10 @@ def graph_tests():
     >>> g.parse(text='<a> a <b>, <c> .')
     1
     >>> g.reinit()
-    >>> g.parse(text='@load <http://www.nexml.org/nexml/examples/trees.rdf>')
-    1
-    >>> sorted([str(s) for s in g.statements.keys()])[:5]
-    ['<http://example.org/e1>', '<http://example.org/e2>', '<http://example.org/e3>', '<http://example.org/e4>', '<http://example.org/e5>']
+    >>> #g.parse(text='@load <http://www.nexml.org/nexml/examples/trees.rdf>')
+    >>> #1
+    >>> #sorted([str(s) for s in g.statements.keys()])[:5]
+    >>> #['<http://example.org/e1>', '<http://example.org/e2>', '<http://example.org/e3>', '<http://example.org/e4>', '<http://example.org/e5>']
     >>> g.reinit()
     >>> g.parse(text='@for ?x in (1 2 3 4 5) { <a> <b> ?x . }')
     1
@@ -85,10 +85,10 @@ def graph_tests():
     set([1, 2, 3, 4, 5])
     >>> g.parse(text="?cat ?name = { ?name a example:cat . <ben> <has_cat> ?name . }")
     1
-    >>> g.parse(text="@for ?name in ('whiskers' 'socks' 'oreo') ?cat ?name .")
+    >>> g.parse(text="@for ?name in (<whiskers> <socks> <oreo>) ?cat ?name .")
     1
     >>> g.statements[Uri('ben')][Uri('has_cat')]
-    set(['whiskers', 'socks', 'oreo'])
+    set([<socks>, <whiskers>, <oreo>])
     >>> g.reinit()
     >>> g.parse(text='?a ?b = { <things> <not_a_one> ?b } . ?a 1 = { <things> <is_a_one> 1 } .')
     2
