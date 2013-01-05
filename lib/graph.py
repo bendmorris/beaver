@@ -38,10 +38,15 @@ class Graph(object):
         else: 
             self.last_subj = subj = stmt.subj
 
-        if isinstance(subj, Value): raise BeaverException('Literals are not allowed as RDF subjects.')
-        
         verb = stmt.verb
         obj = stmt.obj
+        
+        if isinstance(subj, Value): raise BeaverException('Literals are not allowed as RDF subjects.')
+        if isinstance(verb, Value): raise BeaverException('Literals are not allowed as RDF predicates.')
+        
+        for x in (subj, verb, obj):
+            if isinstance(x, Variable):
+                raise BeaverException('Unresolved variable: %s' % x)
         
         if not subj in self.statements:
             self.statements[subj] = {}
