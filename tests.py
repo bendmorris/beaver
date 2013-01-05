@@ -74,10 +74,10 @@ def graph_tests():
     >>> g.parse(text='<a> a <b>, <c> .')
     1
     >>> g.reinit()
-    >>> #g.parse(text='@load <http://www.nexml.org/nexml/examples/trees.rdf>')
-    >>> #1
-    >>> #sorted([str(s) for s in g.statements.keys()])[:5]
-    >>> #['<http://example.org/e1>', '<http://example.org/e2>', '<http://example.org/e3>', '<http://example.org/e4>', '<http://example.org/e5>']
+    >>> g.parse(text='@load <http://www.nexml.org/nexml/examples/trees.rdf>')
+    1
+    >>> sorted([str(s) for s in g.statements.keys()])[:5]
+    ['<http://example.org/e1>', '<http://example.org/e2>', '<http://example.org/e3>', '<http://example.org/e4>', '<http://example.org/e5>']
     >>> g.reinit()
     >>> g.parse(text='@for ?x in (1 2 3 4 5) { <a> <b> ?x . }')
     1
