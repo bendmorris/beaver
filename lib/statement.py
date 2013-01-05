@@ -5,7 +5,7 @@ from copy import deepcopy as copy
 class Statement(object):
     '''A generic statement containing any number of variable parts.'''
     def __init__(self, *parts):
-        self.parts = parts
+        self.parts = list(parts)
     def __str__(self): 
         return (' '.join([str(part) for part in self.parts[:3]]) + 
                 ''.join([', %s' % part for part in self.parts[3:]]))
@@ -35,11 +35,13 @@ class Statement(object):
                                 definition = copy(definition)
                                 
                                 # a match was found; replace the variable with its definition
+                                if isinstance(definition, tuple): definition = list(definition)
+                                
                                 if isinstance(definition, Statement): definition = definition.parts
                                 elif isinstance(definition, list): definition = [p for stmt in definition for p in stmt.parts]
                                 else: definition = [definition]
                                 
-                                self.parts = self.parts[:n] + tuple(definition) + self.parts[n+1:]
+                                self.parts = self.parts[:n] + definition + self.parts[n+1:]
                                 matched = True
                 
         # repeat until no changes were made
