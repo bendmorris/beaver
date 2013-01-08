@@ -230,7 +230,6 @@ class Graph(object):
                 if v == 'rdf:type': v = 'a'
                 
                 objs = self.statements[subj][verb]
-                print objs, [o.__class__ for o in objs]
                 o = ', '.join([str(obj.apply_prefix(self)) for obj in objs])
                 handle.write('%s %s %s' % (s, v, o))
             handle.write(' .\n')
