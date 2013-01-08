@@ -51,6 +51,8 @@ def parser_tests():
     <a> <b> true .
     >>> expression.parseString('<a> <b> false .', parseAll=True)[0]
     <a> <b> false .
+    >>> expression.parseString('?a :b :c ; :d :e .', parseAll=True)[0]
+    ?a :b :c ; :d :e .
     '''
 
 
