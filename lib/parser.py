@@ -40,8 +40,8 @@ boolean = bool_true | bool_false
 longString = Regex(r'''("{3}([\s\S]*?"{3}))|('{3}([\s\S]*?'{3}))''')
 str_literal = longString | quotedString
 str_literal.setParseAction(lambda x: Value(''.join(x)))
-datatypeString = quotedString + '^^' + resource
-literal = (str_literal + Optional(Suppress('@') + language)) | datatypeString | double | integer | boolean
+datatypeString = str_literal + Suppress('^^') + Suppress(resource)
+literal = datatypeString | (str_literal + Optional(Suppress('@') + language)) | double | integer | boolean
 predicateObjectList = Forward()
 collection = Forward()
 blank = nodeID | Suppress('[]') | (Suppress('[') + predicateObjectList + Suppress(']')) | collection
