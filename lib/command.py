@@ -187,4 +187,5 @@ class FuncCall(Command):
                                 if isinstance(m, Variable):
                                     new_context[m] = [(None, arg)]
                                     
-                            graph.execute(copy(definition), updated_context(context, new_context))
+                            new_context = updated_context(context, new_context)
+                            graph.execute(copy(definition), new_context)

@@ -23,6 +23,13 @@ class Statement(object):
         matched = False
         
         # check for single variables in statement
+        subj = self.subject
+        if isinstance(subj, Variable):
+            result, new_match = def_match(subj, varsets)
+            if result:
+                self.subject = new_match
+                self.replace(*varsets)        
+        
         for n, (verb, objects) in enumerate(self.verb_objects):
             if isinstance(verb, Variable):
                 result, new_match = def_match(verb, varsets)
