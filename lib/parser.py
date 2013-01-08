@@ -38,11 +38,10 @@ bool_false = Suppress('false')
 bool_false.setParseAction(lambda x: Value(False))
 boolean = bool_true | bool_false
 longString = Regex(r'''("{3}([\s\S]*?"{3}))|('{3}([\s\S]*?'{3}))''')
-longString.setParseAction(lambda x: ''.join(x)[2:-1])
 str_literal = longString | quotedString
 str_literal.setParseAction(lambda x: Value(''.join(x)))
 datatypeString = quotedString + '^^' + resource
-literal = (quotedString + Optional(Suppress('@') + language)) | datatypeString | double | integer | boolean
+literal = (str_literal + Optional(Suppress('@') + language)) | datatypeString | double | integer | boolean
 predicateObjectList = Forward()
 collection = Forward()
 blank = nodeID | Suppress('[]') | (Suppress('[') + predicateObjectList + Suppress(']')) | collection
@@ -109,6 +108,8 @@ command = (
 expression << ((Suppress('{') + OneOrMore(expression) + Suppress('}')) |
                (command | statement)
                 ) + Optional('.').suppress()
+                
+document = ZeroOrMore(expression)
 
 
 def parse_string(string):
@@ -123,4 +124,4 @@ def parse_stream(handle):
     # TODO: add a lazy scanFile method to pyparsing.py so that the whole handle 
     #       doesn't need to be read at once
     text = handle.read()
-    return expression.scanString(text)
+    return document.parseString(text, parseAll=True)

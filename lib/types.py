@@ -34,7 +34,7 @@ class QUri(Uri):
         self.url = str(url)
     def __str__(self): return '%s:%s' % (self.prefix, self.url)
     def __repr__(self): return str(self)
-    def apply_prefix(self, prefixes): return self
+    def apply_prefix(self, graph): return self
     
     
 class Variable(object):
@@ -56,7 +56,7 @@ class Value(object):
     def __repr__(self): return str(self)
     def __eq__(self, x): return self.value == x
     def __hash__(self): return hash(self.value)
-    def apply_prefix(self, prefixes): return self
+    def apply_prefix(self, graph): return self
         
         
 class Collection(object):
