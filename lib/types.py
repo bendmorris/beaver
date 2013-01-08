@@ -59,14 +59,14 @@ class Value(object):
     def apply_prefix(self, prefixes): return self
         
         
-class Pattern(object):
+class Collection(object):
     def __init__(self, *vars):
         self.vars = vars
-    def __str__(self): return (' ' if self.vars else '') + ' '.join([str(var) for var in self.vars])
+    def __str__(self): return '( ' + ' '.join([str(var) for var in self.vars]) + ' )'
     def __repr__(self): return str(self)
     def __eq__(self, x): return self.vars == x.vars
     
-EmptyPattern = Pattern(*[])
+EmptyCollection = Collection()
 
 
 def updated_context(context, new_context):

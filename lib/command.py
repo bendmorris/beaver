@@ -1,12 +1,14 @@
-from types import BeaverException, Variable, Uri, Pattern, EmptyPattern, updated_context
+from types import BeaverException, Variable, Uri, Collection, EmptyCollection, updated_context
 from statement import Statement
 import urllib2
 from copy import deepcopy as copy
 
 
 class Command(object):
+    def __init__(self, *args):
+        self.args = args
     def execute(self, graph, context={}):
-        raise BeaverException('This command (%s) has not yet been implemented.' % self.__doc__)
+        raise BeaverException('This command (%s) has not yet been implemented.' % self.__class__.__name__)
     def __str__(self): return '%s(**%s)' % (str(self.__class__.__name__).split('.')[-1], self.__dict__)
     def __repr__(self): return str(self)
     def replace(self, *varsets): pass
@@ -44,7 +46,7 @@ class DefCommand(Command):
     def __str__(self):
         if hasattr(self.triples, '__iter__'): triples = '{ %s }' % ' '.join([str(s) for s in self.triples])
         else: triples = str(self.triples)
-        return '%s%s = %s' % (self.ident, self.pattern, triples)
+        return '%s%s = %s' % (self.ident, self.pattern if not self.pattern==EmptyCollection else '', triples)
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
@@ -149,12 +151,16 @@ class ForCommand(Command):
         self.ident = ident
         self.sequence = sequence
         self.expression = expression
-    def __str__(self): return '@for %s in (%s ) %s' % (self.ident, self.sequence, ''.join([str(x) for x in self.expression]))
+    def __str__(self): return '@for %s in %s %s' % (self.ident, self.sequence, ''.join([str(x) for x in self.expression]))
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         for var in self.sequence.vars:
             expr = [copy(x) for x in self.expression]
-            iter_context = {self.ident: [(EmptyPattern, var)]}
+            iter_context = {self.ident: [(EmptyCollection, var)]}
             new_context = updated_context(context, iter_context)
             graph.execute(expr, new_context)
+            
+            
+class FuncCall(Command):
+    pass

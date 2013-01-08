@@ -59,7 +59,7 @@ class Graph(object):
                 if not subj in self.statements: return
                 if not verb in self.statements[subj]: return
                 
-                try: self.statements[subj][verb].remove(stmt.obj)
+                try: self.statements[subj][verb].remove(obj)
                 except KeyError: pass
                 
                 if len(self.statements[subj][verb]) == 0: del self.statements[subj][verb]
@@ -68,11 +68,11 @@ class Graph(object):
         
     def execute(self, stmt, context={}):
         if isinstance(stmt, Statement):
-            #replace = stmt.replace(context, self.defs)
-            #if replace:
-            #    new_stmt, new_context = replace
-            #    context = updated_context(context, new_context)
-            #    return self.execute(new_stmt, context)
+            replace = stmt.replace(context, self.defs)
+            if replace:
+                new_stmt, new_context = replace
+                context = updated_context(context, new_context)
+                return self.execute(new_stmt, context)
             
             self.add_stmt(stmt)
                         

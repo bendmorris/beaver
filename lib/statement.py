@@ -1,4 +1,4 @@
-from types import BeaverException, Variable, Pattern, EmptyPattern, updated_context
+from types import BeaverException, Variable, Collection, EmptyCollection, updated_context
 from copy import deepcopy as copy
 
 
@@ -6,7 +6,7 @@ class Statement(object):
     '''A generic statement containing any number of variable parts.'''
     def __init__(self, subject, verb_objects):
         self.subject = subject
-        self.verb_objects = verb_objects
+        self.verb_objects = [(v, list(o)) for v, o in verb_objects]
     def __str__(self): 
         return '%s %s .' % (str(self.subject),
                              ' ; '.join(['%s %s' % (str(verb), 
@@ -23,52 +23,20 @@ class Statement(object):
         matched = False
         
         # check for single variables in statement
-        for n, part in enumerate(self.parts):
-            if isinstance(part, Variable):
-                for varset in varsets:
-                    if matched: break
-                    if part in varset:
-                        defs = varset[part]
-                        for (pattern, definition) in defs:
-                            if matched: break
-                            if part == definition: continue
-                            
-                            if len(pattern.vars) == 0:
-                                definition = copy(definition)
-                                
-                                # a match was found; replace the variable with its definition
-                                if isinstance(definition, tuple): definition = list(definition)
-                                
-                                if isinstance(definition, Statement): definition = definition.parts
-                                elif isinstance(definition, list): definition = [p for stmt in definition for p in stmt.parts]
-                                else: definition = [definition]
-                                
-                                self.parts = self.parts[:n] + definition + self.parts[n+1:]
-                                matched = True
-                
-        # repeat until no changes were made
-        if matched: return self.replace(*varsets)
+        for n, (verb, objects) in enumerate(self.verb_objects):
+            if isinstance(verb, Variable):
+                result, new_match = def_match(verb, varsets)
+                if result:
+                    v, o = self.verb_objects[n]
+                    self.verb_objects[n] = (new_match, o)
+                    self.replace(*varsets)
         
-        # check if statement is a function call
-        if isinstance(self.subject, Variable):
-            var = self.parts[0]
-            args = self.parts[1:]
-            for varset in varsets:
-                if var in varset:
-                    defs = varset[var]
-                    for (pattern, definition) in defs:
-                        need_to_match = pattern.vars
-                        if len(need_to_match) == len(args):
-                            if all(match(arg, m) for arg, m in zip(args, need_to_match)):
-                                # a match was found; return a function call with a new context
-                                context = {}
-                                
-                                for arg, m in zip(args, need_to_match):
-                                    if isinstance(m, Variable):
-                                        context[m] = [(EmptyPattern, arg)]
-                                        
-                                return (copy(definition), updated_context(varsets[0], context))
-
+            for m, obj in enumerate(objects):
+                if isinstance(obj, Variable):
+                    result, new_match = def_match(obj, varsets)
+                    if result:
+                        objects[m] = new_match
+                        self.replace(*varsets)
         
         return None
         
@@ -77,3 +45,23 @@ def match(given, definition):
     '''Returns true if a given argument matches the definition.'''
     if isinstance(definition, Variable): return True
     return definition == given
+    
+def def_match(part, varsets):
+    matched = False
+    
+    for varset in varsets:
+        if matched: break
+        if part in varset:
+            defs = varset[part]
+            for (pattern, definition) in defs:
+                if matched: break
+                if part == definition: continue
+                
+                if len(pattern.vars) == 0:
+                    definition = copy(definition)
+                    
+                    # a match was found; replace the variable with its definition
+                    if isinstance(definition, tuple): definition = list(definition)
+                    
+                    return (True, definition)
+    return (False, None)

@@ -50,6 +50,8 @@ blank.setParseAction(lambda x: x[0])
 object = variable | resource | blank | literal
 itemList = OneOrMore(object)
 collection << Suppress('(') + Optional(itemList) + Suppress(')')
+collection.setParseAction(lambda x: Collection(*x))
+pattern = collection | Optional(itemList).setParseAction(lambda x: Collection(*x))
 predicate = resource
 subject = variable | resource | blank
 subject.setParseAction(lambda x: x[0])
@@ -69,14 +71,9 @@ prefixID.setParseAction(lambda x: PrefixCommand(*x))
 directive = prefixID | base
 statement = (directive | triples | comment) + Optional('.').suppress()
 
-
-# expressions
-
-pattern = OneOrMore(object)
-pattern.setParseAction(lambda x: Pattern(*x))
             
 # commands
-for_cmd = (Suppress('@for') + variable + Suppress('in') + Suppress('(') + pattern + Suppress(')') + expression)
+for_cmd = (Suppress('@for') + variable + Suppress('in') + collection + expression)
 for_cmd.setParseAction(lambda x: ForCommand(*x))
 load_cmd = (Suppress('@load') + uriref)
 load_cmd.setParseAction(lambda x: LoadCommand(*x))
@@ -90,10 +87,13 @@ write_cmd = (Suppress('@out') + Optional(uriref))
 write_cmd.setParseAction(lambda x: OutCommand(*x))
 reinit_cmd = (Suppress('@reinit'))
 reinit_cmd.setParseAction(lambda x: ReinitCommand())
-definition = (variable + Optional(pattern, default=EmptyPattern) + Suppress('=') + expression)
+definition = (variable + pattern + Suppress('=') + (expression | object))
 definition.setParseAction(lambda x: DefCommand(*x))
+function_call = (variable + pattern)
+function_call.setParseAction(lambda x: FuncCall(*x))
 command = (
            definition |
+           function_call |
            for_cmd |
            load_cmd | 
            import_cmd | 
