@@ -22,7 +22,7 @@ def parser_tests():
     >>> expression.parseString(':a :b 3 .', parseAll=True)[0]
     :a :b 3 .
     >>> expression.parseString('?a <http://www.example.com> abc:def .', parseAll=True)[0]
-    ?a <http://www.example.com> abc:def .
+    ?a ( <http://www.example.com> abc:def )
     >>> [s for s in expression.parseString('<a> a <b> ; <c> <d>, <e> .', parseAll=True)]
     [<a> rdf:type <b> ; <c> <d>, <e> .]
     >>> expression.parseString('@reinit', parseAll=True)[0]

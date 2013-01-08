@@ -48,14 +48,14 @@ collection = Forward()
 blank = nodeID | Suppress('[]') | (Suppress('[') + predicateObjectList + Suppress(']')) | collection
 blank.setParseAction(lambda x: x[0])
 object = variable | resource | blank | literal
-itemList = OneOrMore(object)
+predicate = resource
+verb = variable | predicate | (Suppress('a').setParseAction(lambda x: QUri('rdf', 'type')))
+itemList = OneOrMore(object | verb)
 collection << Suppress('(') + Optional(itemList) + Suppress(')')
 collection.setParseAction(lambda x: Collection(*x))
 pattern = collection | Optional(itemList).setParseAction(lambda x: Collection(*x))
-predicate = resource
 subject = variable | resource | blank
 subject.setParseAction(lambda x: x[0])
-verb = variable | predicate | (Suppress('a').setParseAction(lambda x: QUri('rdf', 'type')))
 verb.setParseAction(lambda x: x[0])
 objectList = delimitedList(object)
 objectList.setParseAction(lambda x: tuple(x))
@@ -107,7 +107,7 @@ command = (
            ) + Optional(".").suppress()
            
 expression << ((Suppress('{') + OneOrMore(expression) + Suppress('}')) |
-               (statement | command)
+               (command | statement)
                 ) + Optional('.').suppress()
 
 

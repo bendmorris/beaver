@@ -31,7 +31,6 @@ class BaseCommand(Command):
     def __init__(self, uri):
         self.uri = uri
     def __str__(self): return '@base %s' % (self.uri)
-    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         graph.base_uri = self.uri
@@ -48,7 +47,6 @@ class DefCommand(Command):
         if hasattr(self.triples, '__iter__'): triples = '{ %s }' % ' '.join([str(s) for s in self.triples])
         else: triples = str(self.triples)
         return '%s%s = %s' % (self.ident, self.pattern if not self.pattern == EmptyCollection or self.pattern is None else '', triples)
-    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         ident = self.ident
@@ -61,7 +59,6 @@ class ImportCommand(Command):
     def __init__(self, uri):
         self.uri = uri
     def __str__(self): return '@import %s' % self.uri
-    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         try:
@@ -77,7 +74,6 @@ class LoadCommand(Command):
     def __init__(self, uri):
         self.uri = uri
     def __str__(self): return '@load %s' % self.uri
-    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         import RDF
@@ -105,7 +101,6 @@ class DelCommand(Command):
     def __init__(self, triples):
         self.triples = triples
     def __str__(self): return '@del %s' % self.triples
-    def __repr__(self): return str(self)
     def execute(self, graph, context={}, triples=None):
         if triples is None: triples = self.triples
         if not hasattr(triples, '__iter__'): triples = [triples]
@@ -122,7 +117,6 @@ class DrawCommand(Command):
     def __init__(self, uri):
         self.uri = uri
     def __str__(self): return '@draw %s' % self.uri
-    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         graph.draw(filename=str(self.uri)[1:-1])
@@ -133,7 +127,6 @@ class OutCommand(Command):
     def __init__(self, uri=None):
         self.uri = uri
     def __str__(self): return '@out%s' % ('' if self.uri is None else ' %s' % self.uri)
-    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         graph.write(filename=None if self.uri is None else str(self.uri)[1:-1])
@@ -142,7 +135,6 @@ class OutCommand(Command):
 class ReinitCommand(Command):
     '''Remove triples from the graph.'''
     def __str__(self): return '@reinit'
-    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         graph.reinit()
@@ -154,7 +146,6 @@ class ForCommand(Command):
         self.sequence = sequence
         self.expression = expression
     def __str__(self): return '@for %s in %s %s' % (self.ident, self.sequence, ''.join([str(x) for x in self.expression]))
-    def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         for var in self.sequence.vars:
@@ -168,6 +159,7 @@ class FuncCall(Command):
     def __init__(self, f, args):
         self.f = f
         self.args = args
+    def __str__(self): return '%s %s' % (self.f, self.args)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         f, args = self.f, self.args.vars
@@ -188,4 +180,8 @@ class FuncCall(Command):
                                     new_context[m] = [(None, arg)]
                                     
                             new_context = updated_context(context, new_context)
-                            graph.execute(copy(definition), new_context)
+                            return graph.execute(copy(definition), new_context)
+        
+        # no match
+        if len(args) == 2: graph.execute(Statement(f, [(args[0], [args[1]])]), context)
+        else: raise BeaverException('Undefined function: %s %s' % (f, self.args))
