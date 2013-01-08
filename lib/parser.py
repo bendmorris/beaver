@@ -38,23 +38,22 @@ bool_false = Suppress('false')
 bool_false.setParseAction(lambda x: Value(False))
 boolean = bool_true | bool_false
 longString = Regex(r'''("{3}([\s\S]*?"{3}))|('{3}([\s\S]*?'{3}))''')
-longString.setParseAction(lambda x: ''.join(x)[3:-3])
+longString.setParseAction(lambda x: ''.join(x)[2:-1])
 str_literal = longString | quotedString
 str_literal.setParseAction(lambda x: Value(''.join(x)))
 datatypeString = quotedString + '^^' + resource
-quotedString.setParseAction(lambda x: ''.join(x)[1:-1])
 literal = (quotedString + Optional(Suppress('@') + language)) | datatypeString | double | integer | boolean
 predicateObjectList = Forward()
 collection = Forward()
 blank = nodeID | Suppress('[]') | (Suppress('[') + predicateObjectList + Suppress(']')) | collection
 blank.setParseAction(lambda x: x[0])
-object = resource | blank | literal
+object = variable | resource | blank | literal
 itemList = OneOrMore(object)
 collection << Suppress('(') + Optional(itemList) + Suppress(')')
 predicate = resource
-subject = resource | blank
+subject = variable | resource | blank
 subject.setParseAction(lambda x: x[0])
-verb = predicate | (Suppress('a').setParseAction(lambda x: QUri('rdf', 'type')))
+verb = variable | predicate | (Suppress('a').setParseAction(lambda x: QUri('rdf', 'type')))
 verb.setParseAction(lambda x: x[0])
 objectList = delimitedList(object)
 objectList.setParseAction(lambda x: tuple(x))

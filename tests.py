@@ -17,8 +17,8 @@ def parser_tests():
     1.0
     >>> literal.parseString('1', parseAll=True)[0]
     1
-    >>> literal.parseString('"abc"', parseAll=True)[0]
-    'abc'
+    >>> print literal.parseString('"abc"', parseAll=True)[0]
+    "abc"
     >>> expression.parseString(':a :b 3 .', parseAll=True)[0]
     :a :b 3 .
     >>> expression.parseString('?a <http://www.example.com> abc:def .', parseAll=True)[0]

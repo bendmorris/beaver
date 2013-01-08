@@ -16,7 +16,7 @@ class Statement(object):
     def __repr__(self): return str(self)
     def __eq__(self, x): return str(self) == str(x)
     
-    """def replace(self, *varsets):
+    def replace(self, *varsets):
         '''Checks each part of the statement against defined variables. If any
         matches are found, the statement is updated. If the statement is a function
         call, a new set of statements is returned; otherwise, None is returned.'''
@@ -50,7 +50,7 @@ class Statement(object):
         if matched: return self.replace(*varsets)
         
         # check if statement is a function call
-        if isinstance(self.parts[0], Variable):
+        if isinstance(self.subject, Variable):
             var = self.parts[0]
             args = self.parts[1:]
             for varset in varsets:
@@ -70,7 +70,7 @@ class Statement(object):
                                 return (copy(definition), updated_context(varsets[0], context))
 
         
-        return None"""
+        return None
         
                             
 def match(given, definition):
