@@ -12,14 +12,19 @@ class Uri(object):
     def __eq__(self, x): return str(self) == str(x)
     def __hash__(self): return hash(str(self))
     
-    def apply_prefix(self, prefixes):
-        this_uri = str(self)[1:-1]
+    def apply_prefix(self, graph):
+        this_uri = self.resolve(graph)
+        prefixes = graph.prefixes
         # try to apply prefixes, by the length of their respective URIs
         for prefix, uri in sorted(prefixes.items(), key=lambda l: len(str(l[1])), reverse=True):
             match_uri = str(uri)[1:-1]
             if this_uri.startswith(match_uri) and len(this_uri) > len(match_uri):
                 return QUri(prefix, this_uri.replace(match_uri, '', 1))
         return self
+
+    def resolve(self, graph):
+        return str(self)[1:-1]
+
 
 class QUri(Uri):
     def __init__(self, prefix, url=None):
@@ -44,7 +49,10 @@ class Variable(object):
 class Value(object):
     def __init__(self, value):
         self.value = value
-    def __str__(self): return str(self.value)
+    def __str__(self): 
+        if isinstance(self.value, bool):
+            return str(self.value).lower()
+        return str(self.value)
     def __repr__(self): return str(self)
     def __eq__(self, x): return self.value == x
     def __hash__(self): return hash(self.value)

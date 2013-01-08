@@ -33,7 +33,12 @@ real = ( Combine(Word(nums) + Optional("." + Word(nums))
          )
 real.setParseAction(lambda x: Value(float(''.join(x))))
 literalNumber = real | integer
-literal = literalString | literalNumber
+literalTrue = Suppress('true')
+literalTrue.setParseAction(lambda x: Value(True))
+literalFalse = Suppress('false')
+literalFalse.setParseAction(lambda x: Value(False))
+literalBool = literalTrue | literalFalse
+literal = literalBool | literalString | literalNumber
 
 variable = (Suppress('?') + Optional(ident, default=''))
 variable.setParseAction(lambda x: Variable(*x))
@@ -58,6 +63,8 @@ for_cmd = (Suppress('@for') + variable + Suppress('in') + Suppress('(') + patter
 for_cmd.setParseAction(lambda x: ForCommand(*x))
 prefix_cmd = (Suppress('@prefix') + ident + Suppress(":") + uri)
 prefix_cmd.setParseAction(lambda x: PrefixCommand(*x))
+base_cmd = (Suppress('@base') + uri)
+base_cmd.setParseAction(lambda x: BaseCommand(*x))
 load_cmd = (Suppress('@load') + uri)
 load_cmd.setParseAction(lambda x: LoadCommand(*x))
 import_cmd = (Suppress('@import') + uri)
@@ -78,6 +85,7 @@ definition_cmd = (function_def | var_def)
 command = (
            for_cmd |
            prefix_cmd | 
+           base_cmd | 
            load_cmd | 
            import_cmd | 
            del_cmd |

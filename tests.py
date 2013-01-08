@@ -45,6 +45,12 @@ def parser_tests():
     @out <test.ttl>
     >>> expression.parseString('@reinit', parseAll=True)[0]
     @reinit
+    >>> expression.parseString('@base <abc.org>', parseAll=True)[0]
+    @base <abc.org>
+    >>> expression.parseString('<a> <b> true .', parseAll=True)[0]
+    <a> <b> true
+    >>> expression.parseString('<a> <b> false .', parseAll=True)[0]
+    <a> <b> false
     '''
 
 
@@ -58,7 +64,7 @@ def graph_tests():
     >>> g.execute(prefix)
     >>> g.prefixes
     {'rdf': <http://www.w3.org/1999/02/22-rdf-syntax-ns#>, 'ex': <http://www.example.com/example#>}
-    >>> str(Uri('http://www.example.com/example#sample').apply_prefix(g.prefixes))
+    >>> str(Uri('http://www.example.com/example#sample').apply_prefix(g))
     'ex:sample'
     >>> try: os.remove('test.png')
     ... except OSError: pass
@@ -102,6 +108,12 @@ def graph_tests():
     2
     >>> g.statements
     {}
+    >>> g.base_uri is None
+    True
+    >>> g.parse(text='@base <http://www.example.org> .')
+    1
+    >>> g.base_uri
+    <http://www.example.org>
     '''
 
 

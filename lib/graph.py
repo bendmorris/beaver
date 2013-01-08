@@ -24,6 +24,7 @@ class Graph(object):
         self.prefixes = {}
         self.last_subj = None
         self.defs = {}
+        self.base_uri = None
         
         self.execute(default)
 
@@ -147,7 +148,7 @@ class Graph(object):
             
             def format_label(s):
                 if isinstance(s, Uri):
-                    s = s.apply_prefix(self.prefixes)
+                    s = s.apply_prefix(self)
                 
                 s = str(s)
                 if s.startswith('<') and s.endswith('>'): s = s[1:-1]
@@ -189,7 +190,7 @@ class Graph(object):
                 
             def format_label(s):
                 if isinstance(s, Uri):
-                    s = s.apply_prefix(self.prefixes)
+                    s = s.apply_prefix(self)
             
                 s = str(s)
                 if s.startswith('<') and s.endswith('>'): s = s[1:-1]
@@ -240,12 +241,12 @@ class Graph(object):
             semicolon = False
             for verb in self.statements[subj]:
                 if semicolon: s = ' ;\n    '
-                else: s = subj.apply_prefix(self.prefixes); semicolon = True
+                else: s = subj.apply_prefix(self); semicolon = True
                 
-                v = verb.apply_prefix(self.prefixes)
+                v = verb.apply_prefix(self)
                 if v == 'rdf:type': v = 'a'
                 
                 objs = self.statements[subj][verb]
-                o = ', '.join([str(obj.apply_prefix(self.prefixes)) for obj in objs])
+                o = ', '.join([str(obj.apply_prefix(self)) for obj in objs])
                 handle.write('%s %s %s' % (s, v, o))
             handle.write(' .\n')

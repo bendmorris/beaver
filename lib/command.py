@@ -22,6 +22,17 @@ class PrefixCommand(Command):
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         graph.prefixes[self.prefix] = self.uri
+
+
+class BaseCommand(Command):
+    '''Define the base URI.'''
+    def __init__(self, uri):
+        self.uri = uri
+    def __str__(self): return '@base %s' % (self.uri)
+    def __repr__(self): return str(self)
+    def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
+        graph.base_uri = self.uri
         
         
 class DefCommand(Command):
