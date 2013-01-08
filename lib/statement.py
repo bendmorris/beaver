@@ -28,7 +28,7 @@ class Statement(object):
             result, new_match = def_match(subj, varsets)
             if result:
                 self.subject = new_match
-                self.replace(*varsets)        
+                return self.replace(*varsets)        
         
         for n, (verb, objects) in enumerate(self.verb_objects):
             if isinstance(verb, Variable):
@@ -36,14 +36,14 @@ class Statement(object):
                 if result:
                     v, o = self.verb_objects[n]
                     self.verb_objects[n] = (new_match, o)
-                    self.replace(*varsets)
+                    return self.replace(*varsets)
         
             for m, obj in enumerate(objects):
                 if isinstance(obj, Variable):
                     result, new_match = def_match(obj, varsets)
                     if result:
                         objects[m] = new_match
-                        self.replace(*varsets)
+                        return self.replace(*varsets)
         
         return None
         

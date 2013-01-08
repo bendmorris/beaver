@@ -1,5 +1,5 @@
 from types import BeaverException, Variable, Uri, Collection, EmptyCollection, updated_context
-from statement import Statement, match
+from statement import Statement, match, def_match
 import urllib2
 from copy import deepcopy as copy
 
@@ -163,6 +163,13 @@ class FuncCall(Command):
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
         f, args = self.f, self.args.vars
+        
+        for n, arg in enumerate(args):
+            if isinstance(arg, Variable):
+                result, new_match = def_match(arg, (context, graph.defs))
+                if result:
+                    self.args.vars[n] = new_match
+                    return self.execute(graph, context)     
             
         for varset in (context, graph.defs):
             if f in varset:
