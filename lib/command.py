@@ -1,5 +1,5 @@
 from types import BeaverException, Variable, Uri, Collection, EmptyCollection, updated_context
-from statement import Statement
+from statement import Statement, match
 import urllib2
 from copy import deepcopy as copy
 
@@ -42,6 +42,7 @@ class DefCommand(Command):
     def __init__(self, ident, pattern, *triples):
         self.ident = ident
         self.pattern = pattern
+        if len(triples) == 1: triples = triples[0]
         self.triples = triples
     def __str__(self):
         if hasattr(self.triples, '__iter__'): triples = '{ %s }' % ' '.join([str(s) for s in self.triples])
@@ -94,8 +95,9 @@ class LoadCommand(Command):
                 if isinstance(item, RDF.Uri): new_item = Uri(str(item))
                 elif isinstance(item, RDF.Node): new_item = Uri(str(item))
                 contents.append(new_item)
-            stmt = Statement(*contents)
-            graph.add_stmt(stmt.as_triple())
+            s, v, o = contents
+            stmt = Statement(s, [(v, [o])])
+            graph.add_stmt(stmt)
             
             
 class DelCommand(Command):
@@ -109,8 +111,8 @@ class DelCommand(Command):
         if not hasattr(triples, '__iter__'): triples = [triples]
         
         for stmt in triples:
-            #replace = stmt.replace(context, graph.defs)
-            #if replace: pass
+            replace = stmt.replace(context, graph.defs)
+            if replace: self.execute(graph, context, triples)
             
             graph.remove_stmt(stmt)
         
@@ -163,4 +165,25 @@ class ForCommand(Command):
             
             
 class FuncCall(Command):
-    pass
+    def __init__(self, f, args):
+        self.f = f
+        self.args = args
+    def execute(self, graph, context={}):
+        if graph.verbose: print str(self)
+        f, args = self.f, self.args.vars
+            
+        for varset in (context, graph.defs):
+            if f in varset:
+                defs = varset[f]
+                for (pattern, definition) in defs:
+                    need_to_match = pattern.vars
+                    if len(need_to_match) == len(args):
+                        if all(match(arg, m) for arg, m in zip(args, need_to_match)):
+                            # a match was found; return a function call with a new context
+                            new_context = {}
+                            
+                            for arg, m in zip(args, need_to_match):
+                                if isinstance(m, Variable):
+                                    new_context[m] = [(EmptyCollection, arg)]
+                                    
+                            graph.execute(copy(definition), updated_context(context, new_context))

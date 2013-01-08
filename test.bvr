@@ -23,6 +23,4 @@
 
 # abcdefg
 
-# @import <file:///home/ben/Dropbox/Dev/beaver/test.rdf> .
-
-?b <1> <2> <3> .
+?b :a :b :c .

@@ -34,7 +34,7 @@ def parser_tests():
     >>> expression.parseString('@load <test.xml>', parseAll=True)[0]
     @load <test.xml>
     >>> expression.parseString('?a = :a :b 3 .', parseAll=True)[0]
-    ?a = { :a :b 3 . }
+    ?a = :a :b 3 .
     >>> expression.parseString('@prefix ex: <http://www.example.com/example#> .', parseAll=True)[0]
     @prefix ex: <http://www.example.com/example#>
     >>> expression.parseString('@for ?obj in (1 <a> ?x b:c "five") { <a> <b> ?obj . }', parseAll=True)[0]
