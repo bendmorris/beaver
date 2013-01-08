@@ -18,7 +18,7 @@ rdftype.setParseAction(lambda x: QUri('rdf', 'type'))
 
 full_uri = (Suppress("<") + url + Suppress(">"))
 full_uri.setParseAction(lambda x: Uri(*x))
-quri = (ident + Suppress(":") + ident)
+quri = (Optional(ident, default='') + Suppress(":") + ident)
 quri.setParseAction(lambda x: QUri(*x))
 uri = full_uri | quri
 
