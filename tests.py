@@ -18,13 +18,13 @@ def parser_tests():
     >>> literal.parseString('1', parseAll=True)[0]
     1
     >>> literal.parseString('"abc"', parseAll=True)[0]
-    "abc"
-    >>> expression.parseString('1 2 3 .', parseAll=True)[0]
-    1 2 3
+    'abc'
+    >>> expression.parseString(':a :b 3 .', parseAll=True)[0]
+    :a :b 3 .
     >>> expression.parseString('?a <http://www.example.com> abc:def .', parseAll=True)[0]
-    ?a <http://www.example.com> abc:def
+    ?a <http://www.example.com> abc:def .
     >>> [s for s in expression.parseString('<a> a <b> ; <c> <d>, <e> .', parseAll=True)]
-    [<a> rdf:type <b>, ; <c> <d>, <e>]
+    [<a> rdf:type <b> ; <c> <d>, <e> .]
     >>> expression.parseString('@reinit', parseAll=True)[0]
     @reinit
     >>> expression.parseString('@draw <test.png>', parseAll=True)[0]
@@ -33,12 +33,12 @@ def parser_tests():
     @import <test.ttl>
     >>> expression.parseString('@load <test.xml>', parseAll=True)[0]
     @load <test.xml>
-    >>> expression.parseString('?a = 1 2 3 .', parseAll=True)[0]
-    ?a = { 1 2 3 }
-    >>> expression.parseString('@prefix ex: <http://www.example.com/example#>', parseAll=True)[0]
+    >>> expression.parseString('?a = :a :b 3 .', parseAll=True)[0]
+    ?a = { :a :b 3 . }
+    >>> expression.parseString('@prefix ex: <http://www.example.com/example#> .', parseAll=True)[0]
     @prefix ex: <http://www.example.com/example#>
     >>> expression.parseString('@for ?obj in (1 <a> ?x b:c "five") { <a> <b> ?obj . }', parseAll=True)[0]
-    @for ?obj in ( 1 <a> ?x b:c "five" ) <a> <b> ?obj
+    @for ?obj in ( 1 <a> ?x b:c "five" ) <a> <b> ?obj .
     >>> expression.parseString('@out', parseAll=True)[0]
     @out
     >>> expression.parseString('@out <test.ttl>', parseAll=True)[0]
@@ -48,10 +48,19 @@ def parser_tests():
     >>> expression.parseString('@base <abc.org>', parseAll=True)[0]
     @base <abc.org>
     >>> expression.parseString('<a> <b> true .', parseAll=True)[0]
-    <a> <b> true
+    <a> <b> true .
     >>> expression.parseString('<a> <b> false .', parseAll=True)[0]
-    <a> <b> false
+    <a> <b> false .
     '''
+
+
+def w3_tests():
+    '''
+    >>> g = Graph()
+    >>> g.parse(text='@import <test.nt>')
+    1
+    '''
+
 
 
 def graph_tests():

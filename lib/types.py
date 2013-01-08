@@ -52,7 +52,7 @@ class Value(object):
     def __str__(self): 
         if isinstance(self.value, bool):
             return str(self.value).lower()
-        return str(self.value)
+        return repr(self.value)
     def __repr__(self): return str(self)
     def __eq__(self, x): return self.value == x
     def __hash__(self): return hash(self.value)

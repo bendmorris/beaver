@@ -6,86 +6,96 @@ from statement import Statement
 from command import *
 
 
-# expressions
+# Turtle BNF: http://www.w3.org/TeamSubmission/turtle/#sec-grammar-grammar
+
 expression = Forward()
 
-url = Word(alphanums + "-._~:/?#[]@!$&'()*+,;=")
-ident = Word(alphanums + "_")
-wildcard = Literal('*')
-wildcard.setParseAction(lambda x: Uri(*x))
-rdftype = Suppress("a")
-rdftype.setParseAction(lambda x: QUri('rdf', 'type'))
-
-full_uri = (Suppress("<") + url + Suppress(">"))
-full_uri.setParseAction(lambda x: Uri(*x))
-quri = (Optional(ident, default='') + Suppress(":") + ident)
-quri.setParseAction(lambda x: QUri(*x))
-uri = full_uri | quri
-
 comment = pythonStyleComment.suppress()
-literalString = (sglQuotedString | dblQuotedString)
-literalString.setParseAction(lambda x: Value(''.join(x)))
+relativeURI = Word(alphanums + "-._~:/?#[]@!$&'()*+,;=")
+name = Word(alphanums + "_")
+prefixName = name
+language = Word(alphas, alphanums + '-')
+uriref = Suppress('<') + relativeURI + Suppress('>')
+uriref.setParseAction(lambda x: Uri(*x))
+qname = Optional(prefixName, default='') + Suppress(':') + Optional(name, default='')
+qname.setParseAction(lambda x: QUri(*x))
+nodeID = Suppress('_:') + name
+nodeID.setParseAction(lambda x: QUri('_', x[0]))
+variable = (Suppress('?') + Optional(name, default=''))
+variable.setParseAction(lambda x: Variable(*x))
+resource = uriref | qname | variable
+resource.setParseAction(lambda x: x[0])
 integer = Word(nums)
 integer.setParseAction(lambda x: Value(int(''.join(x))))
-real = ( Combine(Word(nums) + Optional("." + Word(nums))
-                 + oneOf("E e") + Optional( oneOf('+ -')) + Word(nums))
-         | Combine(Word(nums) + "." + Word(nums))
-         )
-real.setParseAction(lambda x: Value(float(''.join(x))))
-literalNumber = real | integer
-literalTrue = Suppress('true')
-literalTrue.setParseAction(lambda x: Value(True))
-literalFalse = Suppress('false')
-literalFalse.setParseAction(lambda x: Value(False))
-literalBool = literalTrue | literalFalse
-literal = literalBool | literalString | literalNumber
+double = (Combine(Word(nums) + Optional("." + Word(nums))
+                  + oneOf("E e") + Optional( oneOf('+ -')) + Word(nums))
+          | Combine(Word(nums) + "." + Word(nums))
+          )
+double.setParseAction(lambda x: Value(float(''.join(x))))
+bool_true = Suppress('true')
+bool_true.setParseAction(lambda x: Value(True))
+bool_false = Suppress('false')
+bool_false.setParseAction(lambda x: Value(False))
+boolean = bool_true | bool_false
+longString = Regex(r'''("{3}([\s\S]*?"{3}))|('{3}([\s\S]*?'{3}))''')
+longString.setParseAction(lambda x: ''.join(x)[3:-3])
+str_literal = longString | quotedString
+str_literal.setParseAction(lambda x: Value(''.join(x)))
+datatypeString = quotedString + '^^' + resource
+quotedString.setParseAction(lambda x: ''.join(x)[1:-1])
+literal = (quotedString + Optional(Suppress('@') + language)) | datatypeString | double | integer | boolean
+predicateObjectList = Forward()
+collection = Forward()
+blank = nodeID | Suppress('[]') | (Suppress('[') + predicateObjectList + Suppress(']')) | collection
+blank.setParseAction(lambda x: x[0])
+object = resource | blank | literal
+itemList = OneOrMore(object)
+collection << Suppress('(') + Optional(itemList) + Suppress(')')
+predicate = resource
+subject = resource | blank
+subject.setParseAction(lambda x: x[0])
+verb = predicate | (Suppress('a').setParseAction(lambda x: QUri('rdf', 'type')))
+verb.setParseAction(lambda x: x[0])
+objectList = delimitedList(object)
+objectList.setParseAction(lambda x: tuple(x))
+verbObjectList = verb + objectList
+verbObjectList.setParseAction(lambda x: (x[0], tuple(x[1])))
+predicateObjectList << (verbObjectList + ZeroOrMore(Suppress(';') + verbObjectList))
+triples = subject + predicateObjectList
+triples.setParseAction(lambda x: Statement(x[0], x[1:]))
+base = Suppress('@base') + uriref
+base.setParseAction(lambda x: BaseCommand(*x))
+prefixID = Suppress('@prefix') + Optional(prefixName, default='') + Suppress(':') + uriref
+prefixID.setParseAction(lambda x: PrefixCommand(*x))
+directive = prefixID | base
+statement = (directive | triples | comment) + Optional('.').suppress()
 
-variable = (Suppress('?') + Optional(ident, default=''))
-variable.setParseAction(lambda x: Variable(*x))
-triplet = (variable | uri | literal | rdftype)
-triplet.setParseAction(lambda x: x[0])
-# TODO: optional parentheses
-pattern = OneOrMore(triplet)
+
+# expressions
+
+pattern = OneOrMore(object)
 pattern.setParseAction(lambda x: Pattern(*x))
-
-triple = (triplet + triplet + triplet + Optional(OneOrMore(Suppress(',') + triplet)))
-triple.setParseAction(lambda x: Statement(*x))
-continued_triple = (';' + triplet + triplet + Optional(OneOrMore(Suppress(',') + triplet)))
-continued_triple.setParseAction(lambda x: Statement(*x))
-generic_stmt = OneOrMore(Optional(Suppress(',')) + triplet)
-generic_stmt.setParseAction(lambda x: Statement(*x))
-statements = (
-              (triple + OneOrMore(continued_triple)) | generic_stmt
-              )
             
 # commands
 for_cmd = (Suppress('@for') + variable + Suppress('in') + Suppress('(') + pattern + Suppress(')') + expression)
 for_cmd.setParseAction(lambda x: ForCommand(*x))
-prefix_cmd = (Suppress('@prefix') + ident + Suppress(":") + uri)
-prefix_cmd.setParseAction(lambda x: PrefixCommand(*x))
-base_cmd = (Suppress('@base') + uri)
-base_cmd.setParseAction(lambda x: BaseCommand(*x))
-load_cmd = (Suppress('@load') + uri)
+load_cmd = (Suppress('@load') + uriref)
 load_cmd.setParseAction(lambda x: LoadCommand(*x))
-import_cmd = (Suppress('@import') + uri)
+import_cmd = (Suppress('@import') + uriref)
 import_cmd.setParseAction(lambda x: ImportCommand(*x))
 del_cmd = (Suppress('@del') + expression)
 del_cmd.setParseAction(lambda x: DelCommand(*x))
-draw_cmd = (Suppress('@draw') + uri)
+draw_cmd = (Suppress('@draw') + uriref)
 draw_cmd.setParseAction(lambda x: DrawCommand(*x))
-write_cmd = (Suppress('@out') + Optional(uri))
+write_cmd = (Suppress('@out') + Optional(uriref))
 write_cmd.setParseAction(lambda x: OutCommand(*x))
 reinit_cmd = (Suppress('@reinit'))
 reinit_cmd.setParseAction(lambda x: ReinitCommand())
-function_def = (variable + pattern + Suppress('=') + expression)
-function_def.setParseAction(lambda x: DefCommand(*x))
-var_def = (variable + Suppress('=') + expression)
-var_def.setParseAction(lambda x: DefCommand(x[0], EmptyPattern, *x[1:]))
-definition_cmd = (function_def | var_def)
+definition = (variable + Optional(pattern, default=EmptyPattern) + Suppress('=') + expression)
+definition.setParseAction(lambda x: DefCommand(*x))
 command = (
+           definition |
            for_cmd |
-           prefix_cmd | 
-           base_cmd | 
            load_cmd | 
            import_cmd | 
            del_cmd |
@@ -95,7 +105,7 @@ command = (
            ) + Optional(".").suppress()
            
 expression << ((Suppress('{') + OneOrMore(expression) + Suppress('}')) |
-               ((comment | definition_cmd | statements | command))
+               (statement | command)
                 ) + Optional('.').suppress()
 
 

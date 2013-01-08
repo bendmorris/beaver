@@ -1,5 +1,5 @@
 from types import BeaverException, Variable, Uri, Value, updated_context
-from statement import Statement, TripleStatement
+from statement import Statement
 from command import Command, PrefixCommand
 from parser import parse_string, parse_file, parse_stream
 import sys
@@ -22,7 +22,6 @@ class Graph(object):
     def reinit(self):
         self.statements = {}
         self.prefixes = {}
-        self.last_subj = None
         self.defs = {}
         self.base_uri = None
         
@@ -32,67 +31,51 @@ class Graph(object):
     def add_stmt(self, stmt):
         if self.verbose: print str(stmt)
         
-        if stmt.subj == ';': 
-            if self.last_subj:
-                subj = self.last_subj
-            else: raise BeaverException('Unspecified subject: %s' % stmt)
-        else: 
-            self.last_subj = subj = stmt.subj
-
-        verb = stmt.verb
-        obj = stmt.obj
-        
+        subj = stmt.subject
         if isinstance(subj, Value): raise BeaverException('Literals are not allowed as RDF subjects.')
-        if isinstance(verb, Value): raise BeaverException('Literals are not allowed as RDF predicates.')
-        
-        for x in (subj, verb, obj):
-            if isinstance(x, Variable):
-                raise BeaverException('Unresolved variable: %s' % x)
-        
-        if not subj in self.statements:
-            self.statements[subj] = {}
-        if not verb in self.statements[subj]: self.statements[subj][verb] = set()
-        self.statements[subj][verb].add(stmt.obj)
+
+        for verb, objects in stmt.verb_objects:
+            if isinstance(verb, Value): raise BeaverException('Literals are not allowed as RDF predicates.')
+            
+            for obj in objects:
+                for x in (subj, verb, obj):
+                    if isinstance(x, Variable):
+                        raise BeaverException('Unresolved variable: %s' % x)
+                
+                if not subj in self.statements:
+                    self.statements[subj] = {}
+                if not verb in self.statements[subj]: self.statements[subj][verb] = set()
+                self.statements[subj][verb].add(obj)
         
         
     def remove_stmt(self, stmt):
         if self.verbose: print '@del %s' % str(stmt)
         
-        if stmt.subj == ';': 
-            if self.last_subj:
-                subj = self.last_subj
-            else: raise BeaverException('Unspecified subject: %s' % stmt)
-        else: 
-            self.last_subj = subj = stmt.subj
+        subj = stmt.subject
         
-        verb = stmt.verb
-        obj = stmt.obj
+        for verb, objects in stmt.verb_objects:
+            for obj in objects:
         
-        if not subj in self.statements: return
-        if not verb in self.statements[subj]: return
-        
-        try: self.statements[subj][verb].remove(stmt.obj)
-        except KeyError: pass
-        
-        if len(self.statements[subj][verb]) == 0: del self.statements[subj][verb]
-        if len(self.statements[subj]) == 0: del self.statements[subj]
+                if not subj in self.statements: return
+                if not verb in self.statements[subj]: return
+                
+                try: self.statements[subj][verb].remove(stmt.obj)
+                except KeyError: pass
+                
+                if len(self.statements[subj][verb]) == 0: del self.statements[subj][verb]
+                if len(self.statements[subj]) == 0: del self.statements[subj]
         
         
     def execute(self, stmt, context={}):
         if isinstance(stmt, Statement):
-            replace = stmt.replace(context, self.defs)
-            if replace:
-                new_stmt, new_context = replace
-                context = updated_context(context, new_context)
-                return self.execute(new_stmt, context)
-            
-            stmt = stmt.as_triple()
+            #replace = stmt.replace(context, self.defs)
+            #if replace:
+            #    new_stmt, new_context = replace
+            #    context = updated_context(context, new_context)
+            #    return self.execute(new_stmt, context)
             
             self.add_stmt(stmt)
-            
-            if len(stmt.other_objs) > 0:
-                self.execute([Statement(stmt.subj, stmt.verb, o) for o in stmt.other_objs], context)
-            
+                        
         elif isinstance(stmt, Command):
             replace = stmt.replace(context, self.defs)
             if replace:

@@ -4,17 +4,19 @@ from copy import deepcopy as copy
 
 class Statement(object):
     '''A generic statement containing any number of variable parts.'''
-    def __init__(self, *parts):
-        self.parts = list(parts)
+    def __init__(self, subject, verb_objects):
+        self.subject = subject
+        self.verb_objects = verb_objects
     def __str__(self): 
-        return (' '.join([str(part) for part in self.parts[:3]]) + 
-                ''.join([', %s' % part for part in self.parts[3:]]))
+        return '%s %s .' % (str(self.subject),
+                             ' ; '.join(['%s %s' % (str(verb), 
+                                                     ', '.join([str(o) for o in objects]))
+                                          for verb, objects in self.verb_objects])
+                             )
     def __repr__(self): return str(self)
     def __eq__(self, x): return str(self) == str(x)
     
-    def as_triple(self): return TripleStatement(*self.parts)
-    
-    def replace(self, *varsets):
+    """def replace(self, *varsets):
         '''Checks each part of the statement against defined variables. If any
         matches are found, the statement is updated. If the statement is a function
         call, a new set of statements is returned; otherwise, None is returned.'''
@@ -68,24 +70,10 @@ class Statement(object):
                                 return (copy(definition), updated_context(varsets[0], context))
 
         
-        return None
+        return None"""
         
                             
 def match(given, definition):
     '''Returns true if a given argument matches the definition.'''
     if isinstance(definition, Variable): return True
     return definition == given
-
-
-class TripleStatement(Statement):
-    '''Statements can be evaluated to become triple statements.'''
-    def __init__(self, *parts):
-        if len(parts) < 3: raise BeaverException('A triple statement needs a subject, predicate, and object. %s' % str(Statement(*parts)))
-        triple = parts[:3]
-        #for t in triple:
-        #    if isinstance(t, Variable): raise BeaverException('Undefined variable: %s' % t)
-        self.subj, self.verb, self.obj = triple
-        self.other_objs = parts[3:]
-    def __str__(self): return '%s %s %s' % (self.subj, self.verb, ', '.join([str(self.obj)] + [str(o) for o in self.other_objs])) 
-    def __repr__(self): return str(self)
-    def as_triple(self): return self

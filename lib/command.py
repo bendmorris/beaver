@@ -107,15 +107,10 @@ class DelCommand(Command):
         if not hasattr(triples, '__iter__'): triples = [triples]
         
         for stmt in triples:
-            replace = stmt.replace(context, graph.defs)
-            if replace: pass
-            
-            stmt = stmt.as_triple()
+            #replace = stmt.replace(context, graph.defs)
+            #if replace: pass
             
             graph.remove_stmt(stmt)
-            
-            if len(stmt.other_objs) > 0:
-                self.execute(graph, context, [Statement(stmt.subj, stmt.verb, o) for o in stmt.other_objs])
         
         
 class DrawCommand(Command):
