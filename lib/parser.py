@@ -87,10 +87,11 @@ write_cmd = (Suppress('@out') + Optional(uriref))
 write_cmd.setParseAction(lambda x: OutCommand(*x))
 reinit_cmd = (Suppress('@reinit'))
 reinit_cmd.setParseAction(lambda x: ReinitCommand())
-one_object = object
-one_object.setParseAction(lambda x: x[0])
-definition = (variable + pattern + Suppress('=') + (expression | one_object))
-definition.setParseAction(lambda x: DefCommand(*x))
+f_definition = (variable + pattern + Suppress('=') + expression)
+f_definition.setParseAction(lambda x: DefCommand(*x))
+v_definition = (variable + Literal('=').setParseAction(lambda x: None) + object)
+v_definition.setParseAction(lambda x: DefCommand(*x))
+definition = f_definition | v_definition
 function_call = (variable + pattern)
 function_call.setParseAction(lambda x: FuncCall(*x))
 command = (

@@ -47,7 +47,7 @@ class DefCommand(Command):
     def __str__(self):
         if hasattr(self.triples, '__iter__'): triples = '{ %s }' % ' '.join([str(s) for s in self.triples])
         else: triples = str(self.triples)
-        return '%s%s = %s' % (self.ident, self.pattern if not self.pattern==EmptyCollection else '', triples)
+        return '%s%s = %s' % (self.ident, self.pattern if not self.pattern == EmptyCollection or self.pattern is None else '', triples)
     def __repr__(self): return str(self)
     def execute(self, graph, context={}):
         if graph.verbose: print str(self)
@@ -159,7 +159,7 @@ class ForCommand(Command):
         if graph.verbose: print str(self)
         for var in self.sequence.vars:
             expr = [copy(x) for x in self.expression]
-            iter_context = {self.ident: [(EmptyCollection, var)]}
+            iter_context = {self.ident: [(None, var)]}
             new_context = updated_context(context, iter_context)
             graph.execute(expr, new_context)
             
@@ -176,6 +176,7 @@ class FuncCall(Command):
             if f in varset:
                 defs = varset[f]
                 for (pattern, definition) in defs:
+                    if pattern is None: continue
                     need_to_match = pattern.vars
                     if len(need_to_match) == len(args):
                         if all(match(arg, m) for arg, m in zip(args, need_to_match)):
@@ -184,6 +185,6 @@ class FuncCall(Command):
                             
                             for arg, m in zip(args, need_to_match):
                                 if isinstance(m, Variable):
-                                    new_context[m] = [(EmptyCollection, arg)]
+                                    new_context[m] = [(None, arg)]
                                     
                             graph.execute(copy(definition), updated_context(context, new_context))

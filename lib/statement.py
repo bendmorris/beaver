@@ -57,7 +57,7 @@ def def_match(part, varsets):
                 if matched: break
                 if part == definition: continue
                 
-                if len(pattern.vars) == 0:
+                if pattern is None:
                     definition = copy(definition)
                     
                     # a match was found; replace the variable with its definition
