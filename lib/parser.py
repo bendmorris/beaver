@@ -91,7 +91,7 @@ f_definition.setParseAction(lambda x: DefCommand(*x))
 v_definition = (variable + Literal('=').setParseAction(lambda x: None) + object)
 v_definition.setParseAction(lambda x: DefCommand(*x))
 definition = f_definition | v_definition
-function_call = (variable + pattern)
+function_call = (variable + pattern) + Suppress(~FollowedBy(';'))
 function_call.setParseAction(lambda x: FuncCall(*x))
 command = (
            definition |
