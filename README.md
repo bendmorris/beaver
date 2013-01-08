@@ -1,22 +1,25 @@
-Beaver is a semantic programming language. It accepts and manipulates data in the form of RDF graphs.
+Beaver is a semantic programming language. It accepts and manipulates data in 
+the form of RDF graphs.
 
-To install, navigate to the source directory and run "python setup.py install".
+To install, navigate to the source directory and run `python setup.py install`.
 
-Currently, Beaver is an interpreted superset of the Turtle RDF serialization format. Therefore, any valid 
-Turtle file is also valid Beaver code. RDF/XML can also be loaded using the @load command (requires librdf,
-the Redland RDF library's Python bindings: http://librdf.org/docs/python.html).
+Beaver is an interpreted superset of the Turtle RDF serialization format. 
+Therefore, any valid Turtle file is also valid Beaver code. RDF/XML can also 
+be parsed using the `@load` command (requires librdf, the Redland RDF library 
+Python bindings: http://librdf.org/docs/python.html).
+
+RDF is a "data description language"; Beaver is a Turing-complete programming
+language that can be used to express semantic relationships between objects.
 
 
 Examples of Beaver commands:
 
-    # open another Beaver or Turtle file (local or online) and parse the results into the current graph
+    # open another Beaver or Turtle file (local or online) and parse the 
+    # results into the current graph
     @import <data_file.ttl>
-
+    
     # load RDF/XML file
     @load <http://www.nexml.org/nexml/examples/trees.rdf>
-
-    # wipe everything and start over with a new graph
-    @reinit
     
     # define and call functions
     ?create_edge ?child ?parent ?edge = {
@@ -28,22 +31,23 @@ Examples of Beaver commands:
     
     ?create_edge <node1> <node2> <edge1> .
     ?create_edge <node2> <node3> <edge2> .
-
+    
     # save the current graph as an image file
     @draw <test.png>
     @draw <test2.jpg>
-
+    
     # remove triples from the graph
     @del <node1> <part_of_edge> <edge1> .
-
-    # print the current graph to screen
+    
+    # output the current graph to screen
     @out
-
+    
     # save the current graph as Turtle
     @out <output.ttl>
 
 
-Using the interpreter, you can save images of the resulting graphs (requires pydot or pygraphviz.) For example:
+Using the interpreter, you can save images of the resulting graphs (requires 
+graphviz and either pydot or pygraphviz.) For example:
 
     beaver -d test.png -e "<ben> a <human> ; <likes> <carol>, <football> . <carol> a <human> ; <likes> <ben>, <anime> . <ruben> a <human>, <baby> ."
 

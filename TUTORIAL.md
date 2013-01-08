@@ -9,24 +9,25 @@ describes a property of the subject. For example, the statement:
     <whiskers> <color> <black> .
 
 ...says that the subject, `<whiskers>`, has a `<color>`, which is `<black>`.
-This is represented graphically by an arrow, "color", pointing from "whiskers"
-to "black":
+This is represented graphically by an arrow, labeled "color", pointing from 
+"whiskers" to "black":
 
 ![beaver graph](http://i.imgur.com/1qcS3.jpg)
 
 If a statement contains more than three parts, the additional parts represent 
 additional objects: subject, predicate, object1, object2...
 
-Each part of a statement can be either a literal (e.g. `"abc"` or `1.0` or `3`) 
-or a  URI (represented in angled brackets: `<http://www.example.org/cat>`.) 
-Statements can optionally be followed by a period to avoid ambiguity.
+Parts of a statement can be literals (e.g. `"abc"` or `1.0` or `3`) or URIs 
+(represented in angled brackets: `<http://www.example.org/cat>`.) Statements 
+can optionally be followed by a period to avoid ambiguity.
 
 To avoid having to spell out long URIs repeatedly, prefixes can be defined:
     
     @prefix example: <http://www.example.org/>
     example:cat <is> <cool> .
 
-`example:cat` now refers to the longer URI `<http://www.example.org/cat>`.
+The prefix is appended to the URI, so `example:cat` now refers to the longer 
+URI `<http://www.example.org/cat>`.
 
 The word `a` refers to the predicate `rdf:type` and represents the type of an 
 object:
