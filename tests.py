@@ -61,6 +61,24 @@ def w3_tests():
     >>> g = Graph()
     >>> g.parse(text='@import <test.nt>')
     1
+    >>> g.reinit()
+    >>> for i in range(14):
+    ...     uri = 'http://www.w3.org/2001/sw/DataAccess/df1/tests/test-%s.ttl' % str(i).zfill(2)
+    ...     g.parse(text='@import <%s> .' % uri)
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
     '''
 
 
@@ -68,7 +86,7 @@ def w3_tests():
 def graph_tests():
     '''
     >>> g = Graph()
-    >>> g.execute(Statement(Uri('node1'), [(QUri('p','node2'), [Uri('node3'), Uri('node4')])]))
+    >>> g.execute(Statement(Uri('node1'), [(QUri('p:node2'), [Uri('node3'), Uri('node4')])]))
     >>> g.statements
     {<node1>: {p:node2: set([<node3>, <node4>])}}
     >>> prefix = PrefixCommand(prefix='ex', uri=Uri('http://www.example.com/example#'))

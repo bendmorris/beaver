@@ -12,16 +12,16 @@ expression = Forward()
 
 comment = pythonStyleComment.suppress()
 relativeURI = Word(alphanums + "-._~:/?#[]@!$&'()*+,;=")
-name = Word(alphanums + "_")
+name = Word(alphanums + "_-")
 prefixName = name
 language = Word(alphas, alphanums + '-')
-uriref = Suppress('<') + relativeURI + Suppress('>')
+uriref = Combine(Suppress('<') + relativeURI + Suppress('>'))
 uriref.setParseAction(lambda x: Uri(*x))
-qname = Optional(prefixName, default='') + Suppress(':') + Optional(name, default='')
-qname.setParseAction(lambda x: QUri(*x))
-nodeID = Suppress('_:') + name
-nodeID.setParseAction(lambda x: QUri('_', x[0]))
-variable = (Suppress('?') + Optional(name, default=''))
+qname = Combine(Optional(prefixName, default='') + ':' + Optional(name, default=''))
+qname.setParseAction(lambda x: QUri(x[0]))
+nodeID = Combine('_:' + name)
+nodeID.setParseAction(lambda x: QUri('_:' + x[0]))
+variable = Combine(Suppress('?') + Optional(name, default=''))
 variable.setParseAction(lambda x: Variable(*x))
 resource = uriref | qname | variable
 resource.setParseAction(lambda x: x[0])
@@ -45,10 +45,10 @@ literal = datatypeString | (str_literal + Optional(Suppress('@') + language)) | 
 predicateObjectList = Forward()
 collection = Forward()
 blank = nodeID | Suppress('[]') | (Suppress('[') + predicateObjectList + Suppress(']')) | collection
-blank.setParseAction(lambda x: x[0])
+blank.setParseAction(lambda x: Uri('[]'))
 object = variable | resource | blank | literal
 predicate = resource
-verb = variable | predicate | (Suppress('a').setParseAction(lambda x: QUri('rdf', 'type')))
+verb = variable | predicate | (Suppress('a').setParseAction(lambda x: QUri('rdf:type')))
 itemList = OneOrMore(object | verb)
 collection << Suppress('(') + Optional(itemList) + Suppress(')')
 collection.setParseAction(lambda x: Collection(*x))

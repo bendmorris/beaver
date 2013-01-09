@@ -35,7 +35,7 @@ if not sys.stdin.isatty():
     args.eval = sys.stdin.read() + args.eval
 
 
-interactive = (not args.file and not args.eval) or args.interactive
+interactive = (not args.file and not args.eval) or (args.interactive and sys.stdin.isatty())
 
 
 def run():

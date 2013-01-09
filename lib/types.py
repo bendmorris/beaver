@@ -19,7 +19,7 @@ class Uri(object):
         for prefix, uri in sorted(prefixes.items(), key=lambda l: len(str(l[1])), reverse=True):
             match_uri = str(uri)[1:-1]
             if this_uri.startswith(match_uri) and len(this_uri) > len(match_uri):
-                return QUri(prefix, this_uri.replace(match_uri, '', 1))
+                return QUri(prefix + ":" + this_uri.replace(match_uri, '', 1))
         return self
 
     def resolve(self, graph):
@@ -27,11 +27,8 @@ class Uri(object):
 
 
 class QUri(Uri):
-    def __init__(self, prefix, url=None):
-        if url is None:
-            prefix, url = prefix.split(':')
-        self.prefix = str(prefix)
-        self.url = str(url)
+    def __init__(self, uri):
+        self.prefix, self.url = str(uri).split(':')
     def __str__(self): return '%s:%s' % (self.prefix, self.url)
     def __repr__(self): return str(self)
     def apply_prefix(self, graph): return self
