@@ -64,21 +64,8 @@ def w3_tests():
     >>> g.reinit()
     >>> for i in range(14):
     ...     uri = 'http://www.w3.org/2001/sw/DataAccess/df1/tests/test-%s.ttl' % str(i).zfill(2)
-    ...     g.parse(text='@import <%s> .' % uri)
-    1
-    1
-    1
-    1
-    1
-    1
-    1
-    1
-    1
-    1
-    1
-    1
-    1
-    1
+    ...     p = g.parse(text='@import <%s> .' % uri)
+    ...     assert(p == 1)
     '''
 
 
