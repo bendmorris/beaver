@@ -66,6 +66,10 @@ def w3_tests():
     ...     uri = 'http://www.w3.org/2001/sw/DataAccess/df1/tests/test-%s.ttl' % str(i).zfill(2)
     ...     p = g.parse(text='@import <%s> .' % uri)
     ...     assert(p == 1)
+    >>> g.parse(text='@import <http://www.w3.org/2001/sw/DataAccess/df1/tests/rdfs-namespace.ttl>')
+    1
+    >>> g.parse(text='@import <http://www.w3.org/2001/sw/DataAccess/df1/tests/manifest.ttl>')
+    1
     '''
 
 

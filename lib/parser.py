@@ -15,7 +15,7 @@ relativeURI = Word(alphanums + "-._~:/?#[]@!$&'()*+,;=")
 name = Word(alphanums + "_-")
 prefixName = name
 language = Word(alphas, alphanums + '-')
-uriref = Combine(Suppress('<') + relativeURI + Suppress('>'))
+uriref = Combine(Suppress('<') + Optional(relativeURI, default='') + Suppress('>'))
 uriref.setParseAction(lambda x: Uri(*x))
 qname = Combine(Optional(prefixName, default='') + ':' + Optional(name, default=''))
 qname.setParseAction(lambda x: QUri(x[0]))
