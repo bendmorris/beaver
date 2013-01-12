@@ -10,6 +10,9 @@ Python bindings: http://librdf.org/docs/python.html).
 
 RDF is a "data description language"; Beaver is a Turing-complete programming
 language that can be used to express semantic relationships between objects.
+Therefore, regular, well-defined graphs and graphs with recursive structure can
+often be represented more tersely in Beaver than in standard RDF serialization 
+formats.
 
 
 Examples of Beaver commands:
