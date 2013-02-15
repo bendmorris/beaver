@@ -32,10 +32,10 @@ class Graph(object):
         if self.verbose: print str(stmt)
         
         subj = stmt.subject
-        if isinstance(subj, Value): raise BeaverException('Literals are not allowed as RDF subjects.')
+        #if isinstance(subj, Value): raise BeaverException('Literals are not allowed as RDF subjects.')
 
         for verb, objects in stmt.verb_objects:
-            if isinstance(verb, Value): raise BeaverException('Literals are not allowed as RDF predicates.')
+            #if isinstance(verb, Value): raise BeaverException('Literals are not allowed as RDF predicates.')
             
             for obj in objects:
                 for x in (subj, verb, obj):
@@ -134,7 +134,8 @@ class Graph(object):
                     s = s.apply_prefix(self)
                 
                 s = str(s)
-                if s.startswith('<') and s.endswith('>'): s = s[1:-1]
+                for lchar, rchar in ["<>", '""', "''"]:
+                    if s.startswith(lchar) and s.endswith(rchar): s = s[1:-1]
                 
                 return s
 
@@ -163,7 +164,8 @@ class Graph(object):
             
             def format_node_name(s):
                 s = str(s)
-                if s.startswith('<') and s.endswith('>'): s = s[1:-1]
+                for lchar, rchar in ["<>", '""', "''"]:
+                    if s.startswith(lchar) and s.endswith(rchar): s = s[1:-1]
                 
                 bad_chars = "<>'\":"
                 for char in bad_chars:
@@ -176,7 +178,8 @@ class Graph(object):
                     s = s.apply_prefix(self)
             
                 s = str(s)
-                if s.startswith('<') and s.endswith('>'): s = s[1:-1]
+                for lchar, rchar in ["<>", "''"]:
+                    if s.startswith(lchar) and s.endswith(rchar): s = s[1:-1]
                 
                 if (s.startswith('"') and s.endswith('"')): 
                     s = '"\\"%s\\""' % s[1:-1]

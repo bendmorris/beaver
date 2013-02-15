@@ -47,13 +47,13 @@ collection = Forward()
 blank = nodeID | Suppress('[]') | (Suppress('[') + predicateObjectList + Suppress(']')) | collection
 blank.setParseAction(lambda x: Uri('[]'))
 object = variable | resource | blank | literal
-predicate = resource
+predicate = resource | literal
 verb = variable | predicate | (Suppress('a').setParseAction(lambda x: QUri('rdf:type')))
 itemList = OneOrMore(object | verb)
 collection << Suppress('(') + Optional(itemList) + Suppress(')')
 collection.setParseAction(lambda x: Collection(*x))
 pattern = collection | Optional(itemList).setParseAction(lambda x: Collection(*x))
-subject = variable | resource | blank
+subject = variable | resource | blank | literal
 subject.setParseAction(lambda x: x[0])
 verb.setParseAction(lambda x: x[0])
 objectList = delimitedList(object)
