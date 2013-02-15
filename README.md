@@ -34,6 +34,11 @@ Examples of Beaver commands:
     
     ?create_edge <node1> <node2> <edge1> .
     ?create_edge <node2> <node3> <edge2> .
+
+    # loop over items in a collection
+    @for ?node in (<a> <b> <c> <d> <e>) {
+        <a> a <thing> .
+    }
     
     # save the current graph as an image file
     @draw <test.png>
