@@ -37,7 +37,7 @@ Examples of Beaver commands:
 
     # loop over items in a collection
     @for ?node in (<a> <b> <c> <d> <e>) {
-        <a> a <thing> .
+        ?node a <thing> .
     }
     
     # save the current graph as an image file
